@@ -1,0 +1,9 @@
+@use './variables' as v;
+
+h1 {
+  font-size: v.$fs-h1;
+}
+
+h2 {
+  font-size: v.$fs-h2;
+}

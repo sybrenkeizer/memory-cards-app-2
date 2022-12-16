@@ -1,0 +1,109 @@
+@use './variables' as v;
+
+// General
+.section {
+  width: inherit;
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: v.$spc-md;
+  padding: v.$spc-md v.$spc-lg;
+  background-color: v.$clr-dark;
+  border: 0.25rem solid v.$clr-accent-main;
+  border-radius: v.$radius;
+
+  &__header {
+    position: relative;
+    text-align: center;
+    color: v.$clr-accent-main;
+  }
+
+  &__exit-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(180deg);
+    font-size: 1.4em;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: v.$clr-accent-warm;
+    }
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: v.$spc-lg;
+  }
+
+  .form-control {
+    width: 100%;
+    border: 0.15rem solid v.$clr-accent-main;
+    border-radius: v.$radius;
+    color: v.$clr-dark;
+
+    label,
+    select,
+    input,
+    button,
+    textarea {
+      padding: 0.45em;
+      border: none;
+    }
+
+    select,
+    input {
+      background-color: v.$clr-accent-main;
+      color: v.$clr-dark;
+      font-weight: v.$fw-thick;
+    }
+    
+    button {
+      width: 100%;
+      background-color: transparent;
+      color: v.$clr-accent-cold;
+      font-weight: v.$fw-thick;
+      transition: 
+        background-color 0.3s ease-in-out,
+        color 0.3s ease-in-out;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgb(112, 49, 118);
+        color: v.$clr-light;
+      }
+    }
+
+    textarea {
+      resize: none;
+      width: 100%;
+      background-color: transparent;
+      color: v.$clr-accent-cold;
+    }
+
+    ::placeholder {
+      color: v.$clr-dark;
+    }
+  }
+
+}
+
+
+// Main Section
+.cube__side--main {
+
+  .form-control {
+    display: grid;
+    grid-template-columns: 5fr 2fr;
+  }
+}
+
+
+// Create Deck Section
+
+// Edit Deck Section
+
+// Practice Deck Section
+
+// Statistics Section

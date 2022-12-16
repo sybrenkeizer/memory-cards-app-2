@@ -1,0 +1,173 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+}
+
+input,
+label,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+          appearance: none;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.6rem;
+}
+
+.wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: hsl(253deg, 60%, 11%);
+}
+
+.scene {
+  perspective: 3000px;
+}
+
+.cube {
+  width: 35rem;
+  height: 35rem;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1s ease;
+}
+.cube__side {
+  position: absolute;
+  opacity: 0.96;
+}
+.cube__side--main {
+  transform: rotate(0) translate3d(0, 0, 17.5rem);
+}
+.cube__side--practice {
+  transform: rotateX(90deg) translate3d(0, 0, 17.5rem);
+}
+.cube__side--create {
+  transform: rotateY(90deg) translate3d(0, 0, 17.5rem);
+}
+.cube__side--edit {
+  transform: rotateY(-90deg) translate3d(0, 0, 17.5rem);
+}
+.cube__side--statistics {
+  transform: rotateX(-90deg) translate3d(0, 0, 17.5rem);
+}
+.cube__side--back {
+  transform: rotateY(180deg) translate3d(0, 0, 17.5rem);
+}
+
+.section {
+  width: inherit;
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 2);
+  padding: calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 2) calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 3);
+  background-color: hsl(253deg, 60%, 11%);
+  border: 0.25rem solid hsl(289deg, 74%, 57%);
+  border-radius: 0.35rem;
+}
+.section__header {
+  position: relative;
+  text-align: center;
+  color: hsl(289deg, 74%, 57%);
+}
+.section__exit-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(180deg);
+  font-size: 1.4em;
+  transition: color 0.3s ease;
+}
+.section__exit-btn:hover {
+  color: hsl(36deg, 94%, 52%);
+}
+.section__form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 3);
+}
+.section .form-control {
+  width: 100%;
+  border: 0.15rem solid hsl(289deg, 74%, 57%);
+  border-radius: 0.35rem;
+  color: hsl(253deg, 60%, 11%);
+}
+.section .form-control label,
+.section .form-control select,
+.section .form-control input,
+.section .form-control button,
+.section .form-control textarea {
+  padding: 0.45em;
+  border: none;
+}
+.section .form-control select,
+.section .form-control input {
+  background-color: hsl(289deg, 74%, 57%);
+  color: hsl(253deg, 60%, 11%);
+  font-weight: 500;
+}
+.section .form-control button {
+  width: 100%;
+  background-color: transparent;
+  color: hsl(173deg, 76%, 62%);
+  font-weight: 500;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  cursor: pointer;
+}
+.section .form-control button:hover {
+  background-color: rgb(112, 49, 118);
+  color: hsl(0deg, 0%, 94%);
+}
+.section .form-control textarea {
+  resize: none;
+  width: 100%;
+  background-color: transparent;
+  color: hsl(173deg, 76%, 62%);
+}
+.section .form-control ::-moz-placeholder {
+  color: hsl(253deg, 60%, 11%);
+}
+.section .form-control :-ms-input-placeholder {
+  color: hsl(253deg, 60%, 11%);
+}
+.section .form-control ::placeholder {
+  color: hsl(253deg, 60%, 11%);
+}
+
+.cube__side--main .form-control {
+  display: grid;
+  grid-template-columns: 5fr 2fr;
+}/*# sourceMappingURL=style.css.map */
