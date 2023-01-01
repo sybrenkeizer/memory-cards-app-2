@@ -1,0 +1,33 @@
+@use './variables' as v
+
+.scene
+  perspective: 3000px
+
+.cube
+  width: v.$cube-length
+  height: v.$cube-length
+  position: relative
+  transform-style: preserve-3d
+  transition: transform 1s ease
+
+  &__side
+    position: absolute
+    opacity: 0.9
+  
+  &__side--main
+    transform: rotate(0) translate3d(0,0,calc(v.$cube-length/2))
+
+  &__side--practice
+    transform: rotateX(90deg) translate3d(0,0,calc(v.$cube-length/2))
+  
+  &__side--create
+    transform: rotateY(90deg) translate3d(0,0,calc(v.$cube-length/2))
+  
+  &__side--edit
+    transform: rotateY(-90deg) translate3d(0,0,calc(v.$cube-length/2))
+  
+  &__side--statistics
+    transform: rotateX(-90deg) translate3d(0,0,calc(v.$cube-length/2))
+  
+  &__side--back
+    transform: rotateY(180deg) translate3d(0,0,calc(v.$cube-length/2))

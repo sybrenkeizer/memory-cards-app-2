@@ -1,0 +1,395 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+}
+
+input,
+label,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+  outline: none;
+}
+
+h1 {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
+  appearance: none;
+}
+
+::selection {
+  background-color: #703176;
+  color: hsl(0deg, 0%, 94%);
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.6rem;
+}
+
+.wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: hsl(253deg, 60%, 11%);
+}
+
+::-webkit-scrollbar {
+  width: 0.9rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsl(289deg, 74%, 57%);
+  border: 0.3rem solid hsl(253deg, 60%, 11%);
+  border-radius: 100vw;
+}
+
+::-webkit-scrollbar-track {
+  background-color: hsl(253deg, 60%, 11%);
+}
+
+@supports (scrollbar-color: hsl(253deg, 60%, 11%) hsl(253deg, 60%, 11%)) {
+  * {
+    scrollbar-color: hsl(289deg, 74%, 57%) hsl(289deg, 74%, 57%);
+    scrollbar-width: auto;
+  }
+}
+.scene {
+  perspective: 3000px;
+}
+
+.cube {
+  width: 35rem;
+  height: 35rem;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1s ease;
+}
+.cube__side {
+  position: absolute;
+  opacity: 0.9;
+}
+.cube__side--main {
+  transform: rotate(0) translate3d(0, 0, 17.5rem);
+}
+.cube__side--practice {
+  transform: rotateX(90deg) translate3d(0, 0, 17.5rem);
+}
+.cube__side--create {
+  transform: rotateY(90deg) translate3d(0, 0, 17.5rem);
+}
+.cube__side--edit {
+  transform: rotateY(-90deg) translate3d(0, 0, 17.5rem);
+}
+.cube__side--statistics {
+  transform: rotateX(-90deg) translate3d(0, 0, 17.5rem);
+}
+.cube__side--back {
+  transform: rotateY(180deg) translate3d(0, 0, 17.5rem);
+}
+
+.section {
+  width: inherit;
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 2);
+  padding: clamp(0.5rem, 0.4rem + 0.3vw, 1rem) calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 3);
+  background-color: hsl(253deg, 60%, 11%);
+  border: 0.25rem solid hsl(289deg, 74%, 57%);
+  border-radius: 0.35rem;
+}
+.section__header {
+  position: relative;
+  text-align: center;
+  color: hsl(289deg, 74%, 57%);
+}
+.section__exit-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(180deg);
+  font-size: 1.4em;
+  transition: color 0.3s ease;
+}
+.section__exit-btn:hover {
+  color: hsl(36deg, 94%, 52%);
+}
+.section__form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 2);
+}
+.section .form-control {
+  position: relative;
+  width: 100%;
+  border: 0.1rem solid hsl(289deg, 74%, 57%);
+  border-radius: 0.35rem;
+  color: hsl(253deg, 60%, 11%);
+}
+.section .form-control select,
+.section .form-control input,
+.section .form-control button,
+.section .form-control textarea {
+  padding: 0.45em;
+  border: none;
+}
+.section .form-control select {
+  background-color: hsl(289deg, 74%, 57%);
+  color: hsl(253deg, 60%, 11%);
+  font-weight: 500;
+}
+.section .form-control button {
+  width: 100%;
+  background-color: transparent;
+  border-radius: 0.35rem;
+  color: hsl(173deg, 76%, 62%);
+  font-weight: 500;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  cursor: pointer;
+}
+.section .form-control button:hover {
+  background-color: #703176;
+  color: hsl(0deg, 0%, 94%);
+}
+.section .form-control textarea {
+  resize: none;
+  width: 100%;
+  background-color: transparent;
+  color: hsl(173deg, 76%, 62%);
+}
+.section .form-control label {
+  position: absolute;
+  top: -0.8rem;
+  left: 0.7rem;
+  padding-inline: 0.4rem;
+  background-color: hsl(253deg, 60%, 11%);
+  font-weight: 500;
+  color: hsl(289deg, 74%, 57%);
+}
+.section .form-control ::placeholder {
+  color: hsl(253deg, 60%, 11%);
+}
+.section__cards-slider {
+  perspective: 1000px;
+  position: relative;
+  width: 500px;
+  max-width: 100%;
+  height: 300px;
+  max-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.section__cards-slider .card-nav {
+  color: hsl(173deg, 76%, 62%);
+}
+.section__cards-slider .card-nav__right {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 6.5rem;
+  cursor: pointer;
+  font-weight: 100;
+}
+.section__cards-slider .card-nav__right.show {
+  display: block;
+}
+.section__cards-slider .card-nav__left {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 6.5rem;
+  cursor: pointer;
+  font-weight: 100;
+}
+.section__cards-slider .card-nav__left.show {
+  display: block;
+}
+.section__cards-slider .card-nav__index {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 5rem;
+  height: 3rem;
+  top: 6rem;
+  right: 2rem;
+  display: flex;
+  font-size: 1.9rem;
+}
+.section__cards-slider .card-nav__index-input {
+  width: 100%;
+  background-color: transparent;
+  text-align: right;
+}
+.section__cards-slider .card-nav__index-label {
+  align-self: flex-start;
+  width: 100%;
+  background-color: transparent;
+  font-size: 1rem;
+}
+.section__cards-slider .card {
+  position: absolute;
+  opacity: 0;
+  justify-self: center;
+  align-self: center;
+  width: 50%;
+  height: 90%;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  color: hsl(173deg, 76%, 62%);
+}
+.section__cards-slider .card__inner {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+  border: 0.01rem solid hsl(173deg, 76%, 62%);
+  position: absolute;
+}
+.section__cards-slider .card__inner--front, .section__cards-slider .card__inner--back {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.section__cards-slider .card__inner--front .delete-card-btn, .section__cards-slider .card__inner--back .delete-card-btn {
+  position: absolute;
+  top: -1.05rem;
+  right: -0.65rem;
+  padding-inline: 0.2rem;
+  background: hsl(253deg, 60%, 11%);
+  color: hsl(173deg, 76%, 62%);
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+.section__cards-slider .card__inner--front {
+  transform: rotateX(0);
+  z-index: 2;
+}
+.section__cards-slider .card__inner--back {
+  transform: rotateX(180deg);
+}
+.section__cards-slider .card.active .card__inner:hover .delete-card-btn {
+  opacity: 1;
+}
+.section__cards-slider .card.prev {
+  opacity: 0;
+  transform: translateX(-35%) translateY(20%) scale(1.05);
+}
+.section__cards-slider .card.active {
+  opacity: 1;
+  cursor: pointer;
+  z-index: 10;
+  transform: translateX(0) translateY(5%) rotateY(0);
+  height: 100%;
+}
+.section__cards-slider .card.first {
+  transform: translateX(25%) translateY(-15%) scale(0.95);
+  opacity: 0.3;
+}
+.section__cards-slider .card.second {
+  transform: translateX(40%) translateY(-25%) scale(0.9);
+  opacity: 0.1;
+}
+.section__cards-slider .card.third-and-up {
+  transform: translateX(55%) translateY(-30%) scale(0.85);
+  opacity: 0;
+}
+
+.cube__side--main .form-control {
+  display: grid;
+  grid-template-columns: 5fr 2fr;
+}
+.cube__side--main .form-control input[type=text] {
+  background-color: hsl(289deg, 74%, 57%);
+  color: hsl(253deg, 60%, 11%);
+  font-weight: 500;
+}
+.cube__side--main .form-control button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.cube__side--main form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 4);
+  margin-top: -2rem;
+}
+
+.cube__side--create form .form-control input[type=text],
+.cube__side--edit form .form-control input[type=text] {
+  width: 100%;
+  background-color: transparent;
+  color: hsl(173deg, 76%, 62%);
+}
+.cube__side--create form .form-control .add-card-btn,
+.cube__side--edit form .form-control .add-card-btn {
+  display: none;
+}
+.cube__side--create form .form-control .add-card-btn.show,
+.cube__side--edit form .form-control .add-card-btn.show {
+  display: block;
+}
+.cube__side--create form .form-control .edit-card-btn,
+.cube__side--edit form .form-control .edit-card-btn {
+  display: none;
+}
+.cube__side--create form .form-control .edit-card-btn.show,
+.cube__side--edit form .form-control .edit-card-btn.show {
+  display: block;
+}
+.cube__side--create .card-nav ::selection,
+.cube__side--edit .card-nav ::selection {
+  background-color: transparent;
+  color: inherit;
+}/*# sourceMappingURL=style.css.map */

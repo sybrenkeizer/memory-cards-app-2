@@ -1,0 +1,17 @@
+@use 'variables' as v
+  
+::-webkit-scrollbar 
+	width: 0.9rem
+
+::-webkit-scrollbar-thumb
+	background-color: v.$clr-accent-main
+	border: 0.3rem solid v.$clr-dark
+	border-radius: 100vw
+
+::-webkit-scrollbar-track 
+	background-color: v.$clr-dark
+
+@supports (scrollbar-color: v.$clr-dark v.$clr-dark) 
+	*
+		scrollbar-color: v.$clr-accent-main v.$clr-accent-main
+		scrollbar-width: auto

@@ -1,0 +1,307 @@
+@use './variables' as v
+
+// General
+.section
+  width: inherit
+  height: inherit
+  display: flex
+  flex-direction: column
+  gap: v.$spc-md
+  padding: v.$spc-sm v.$spc-lg
+  background-color: v.$clr-dark
+  border: 0.25rem solid v.$clr-accent-main
+  border-radius: v.$radius
+
+  &__header
+    position: relative
+    text-align: center
+    color: v.$clr-accent-main
+
+  &__exit-btn
+    position: absolute
+    top: 0
+    left: 0
+    transform: rotate(180deg)
+    font-size: 1.4em
+    transition: color 0.3s ease
+
+    &:hover
+      color: v.$clr-accent-warm
+
+  &__form
+    height: 100%
+    display: flex
+    flex-direction: column
+    gap: v.$spc-md
+
+  .form-control
+    position: relative
+    width: 100%
+    border: 0.1rem solid v.$clr-accent-main
+    border-radius: v.$radius
+    color: v.$clr-dark
+
+    select,
+    input,
+    button,
+    textarea
+      padding: 0.45em
+      border: none
+
+    select
+      background-color: v.$clr-accent-main
+      color: v.$clr-dark
+      font-weight: v.$fw-thick
+
+    button
+      width: 100%
+      background-color: transparent
+      border-radius: v.$radius
+      color: v.$clr-accent-cold
+      font-weight: v.$fw-thick
+      transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out
+      cursor: pointer
+
+      &:hover
+        background-color: v.$clr-btn-hover
+        color: v.$clr-light
+
+    textarea
+      resize: none
+      width: 100%
+      background-color: transparent
+      color: v.$clr-accent-cold
+
+    label
+      position: absolute
+      top: -.8rem
+      left: .7rem
+      padding-inline: 0.4rem
+      background-color: v.$clr-dark
+      font-weight: v.$fw-thick
+      color: v.$clr-accent-main
+
+    ::placeholder
+      color: v.$clr-dark
+  
+  // Card Slider
+  &__cards-slider
+    perspective: 1000px
+    position: relative
+    width: 500px
+    max-width: 100%
+    height: 300px
+    max-height: 100%
+    display: flex
+    justify-content: center
+    align-content: center
+
+    .card-nav
+      color: v.$clr-accent-cold
+
+      &__right
+        display: none
+        position: absolute
+        top: 0
+        right: 0
+        font-size: 6.5rem
+        cursor: pointer
+        font-weight: 100
+
+      &__right.show
+        display: block
+
+      &__left
+        display: none
+        position: absolute
+        top: 0
+        left: 0
+        font-size: 6.5rem
+        cursor: pointer
+        font-weight: 100
+
+      &__left.show
+        display: block
+
+      &__index
+        display: flex
+        justify-content: center
+        align-items: center
+        position: absolute
+        width: 5rem
+        height: 3rem
+        top: 6rem
+        right: 2rem
+        display: flex
+        font-size: 1.9rem
+
+        &-input
+          width: 100%
+          background-color: transparent
+          text-align: right
+
+        &-label
+          align-self: flex-start
+          width: 100%
+          background-color: transparent
+          font-size: 1rem
+
+    .card
+      position: absolute
+      opacity: 0
+      justify-self: center
+      align-self: center
+      width: 50%
+      height: 90% 
+      transition: transform 0.4s ease, opacity 0.4s ease
+      color: v.$clr-accent-cold
+
+      &__inner
+        width: 100%
+        height: 100%
+        flex-direction: column
+        align-content: center
+        justify-content: center
+        position: relative
+        transform-style: preserve-3d
+        transition: transform 0.4s ease
+        border: 0.01rem solid v.$clr-accent-cold
+        position: absolute
+
+      &__inner--front,
+      &__inner--back
+        backface-visibility: hidden
+        position: absolute
+        top: 0
+        left: 0
+        width: 100%
+        height: 100%
+        display: flex
+        flex-direction: column
+        align-content: center
+        justify-content: center
+        padding: 0.5rem
+        display: flex
+        justify-content: center
+        align-items: center
+        text-align: center
+
+        .delete-card-btn
+          position: absolute
+          top: -1.05rem
+          right: -0.65rem
+          padding-inline: 0.2rem
+          background: v.$clr-dark
+          color: v.$clr-accent-cold
+          font-size: 1.5rem
+          cursor: pointer
+          opacity: 1
+          transition: opacity 0.3s ease
+
+      &__inner--front
+        transform: rotateX(0)
+        z-index: 2
+
+      &__inner--back
+        transform: rotateX(180deg)
+
+    .card.active 
+
+      .card__inner:hover .delete-card-btn
+        opacity: 1
+
+
+    .card.prev
+      opacity: 0
+      transform: translateX(-35%) translateY(20%) scale(1.05)
+
+    .card.active
+      opacity: 1
+      cursor: pointer
+      z-index: 10
+      transform: translateX(0) translateY(5%) rotateY(0)
+      height: 100%
+      
+    .card.first
+      transform: translateX(25%) translateY(-15%) scale(0.95)
+      opacity: 0.3
+
+    .card.second
+      transform: translateX(40%) translateY(-25%) scale(0.90)
+      opacity: 0.1
+
+    .card.third-and-up
+      transform: translateX(55%) translateY(-30%) scale(0.85)
+      opacity: 0
+
+      
+
+
+// Main Section
+.cube__side--main
+
+  .form-control
+    display: grid
+    grid-template-columns: 5fr 2fr
+
+    input[type="text"]
+      background-color: v.$clr-accent-main
+      color: v.$clr-dark
+      font-weight: v.$fw-thick
+
+    button
+      border-top-left-radius: 0
+      border-bottom-left-radius: 0
+
+  form
+    height: 100%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    gap: v.$spc-xl
+    margin-top: - v.$fs-h1
+
+
+// Create Deck Section
+.cube__side--create,
+.cube__side--edit
+
+  form
+
+    .form-control 
+
+      input[type="text"]
+        width: 100%
+        background-color: transparent
+        color: v.$clr-accent-cold
+
+      .add-card-btn
+        display: none
+
+      .add-card-btn.show
+        display: block
+      
+      .edit-card-btn
+        display: none
+
+      .edit-card-btn.show
+        display: block
+
+  .card-nav
+    
+    ::selection
+      background-color: transparent
+      color: inherit
+
+  
+  // &__cards-slider
+
+
+
+
+
+// Edit Deck Section
+
+// Practice Deck Section
+
+// Statistics Section
