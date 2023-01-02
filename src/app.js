@@ -406,9 +406,9 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 				UICtrl.removeCardsUI();
 				UICtrl.resetCardIndexCount();
 				UICtrl.printDeckMenuOption(UISelectors.MsPracticeSectionMenu, activeDeck);
-
-
-
+				UICtrl.printDeckMenuOption(UISelectors.MsEditSectionMenu, activeDeck);
+				UICtrl.printDeckMenuOption(UISelectors.MsDeleteDeckMenu, activeDeck);
+				UICtrl.printDeckMenuOption(UISelectors.MsStatisticsSectionMenu, activeDeck);
 			});
 		document
 			.querySelector(UISelectors.CsCardSliderIndex)
@@ -416,6 +416,14 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		document
 			.querySelector(UISelectors.CsCardSlider)
 			.addEventListener('click', deleteCard);
+		document.addEventListener('DOMContentLoaded', (e) => {
+			JSON.parse(localStorage.getItem('decks')).forEach(deck => {
+				UICtrl.printDeckMenuOption(UISelectors.MsPracticeSectionMenu, deck);
+				UICtrl.printDeckMenuOption(UISelectors.MsEditSectionMenu, deck);
+				UICtrl.printDeckMenuOption(UISelectors.MsDeleteDeckMenu, deck);
+				UICtrl.printDeckMenuOption(UISelectors.MsStatisticsSectionMenu, deck);
+			})
+		});
 	};
 
 	
@@ -679,11 +687,9 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	const showPreviousCardUI = (e) => {
 		const UISelectors = UICtrl.getSelectors();
 		DeckCtrl.logData().activeCard--;
-
 		if (DeckCtrl.logData().activeCard > 0) {
 			DeckCtrl.logData().activeCardID = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 1].id;
 		}
-
 		let activeCard = DeckCtrl.logData().activeCard;
 		showDeckNav();
 		UICtrl.updateCardIndex();
@@ -709,31 +715,13 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		UICtrl.displayCardInInputFields();
 		UICtrl.showAddCardBtn();
 		UICtrl.showEditCardBtn();
-
-		
 		// Reset card question & answer text when chosen to not edit
 		if (DeckCtrl.logData().activeCard > 1) {
 			const lastCard = document.querySelector(UISelectors.CsCardSlider).children[DeckCtrl.logData().activeCard + 2];
 			lastCard.firstElementChild.children[0].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard].question;
 			lastCard.firstElementChild.children[1].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard].answer;
 		};
-		
-		
-	}
-
-	
-
-
-
-	// Store deck
-	const CsStoreDeck = (e) => {
-		e.preventDefault();
-
-			// Store active deck to local storage
-			// Check for clearing all UI input in create-section 
-	} 
-
-
+	};
 
 	// Public methods
 	return {
