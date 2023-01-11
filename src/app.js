@@ -1,138 +1,95 @@
-// Add Card button click:
-//	- Move current card to the left
-//	- Set new card to the center
-//	- Clear input fields
-//	- Both input fields can not be empty
-//	- Store card data (question and answer) in current active deck
-// 	- Hide empty cards
+//! BUGS
+// - section navigation on keypress enter not working 
 
-// Create Deck button click:
-//	- store deck in local storage
-//	- navigate to main menu
-//	- clear all crete section input fields and cards
-//	- clear data object with temp deck and card data
-//	- show deck in local storage in select menus
-
-// Capitalize sentences
-
-// Swipe cards left and right to edit
-
-// Highlight/mark form control fields upon selection or focus
+// TODO : Add methods to deck controller to deal with data updates
+// TODO : Trim UI selectors
+// TODO : Join all cardslider event listeners together?
 
 
-
-
-// Storage Controller
+// STORAGE CONTROLLER
 const StorageCtrl = (function () {
 
-	// Public methods
 	return {
-		storeDeck: function(deck) {
+		storeDeck: (deck) => {
 			let decks;
 			if (localStorage.getItem('decks') === null) {
 				decks = [];
 				decks.push(deck);
 				localStorage.setItem('decks', JSON.stringify(decks));
 			} else {
-				// console.log(deck);
 				decks = JSON.parse(localStorage.getItem('decks'));
 				decks.push(deck);
-				// console.log(decks);
 				localStorage.setItem('decks', JSON.stringify(decks));
 			}
 		},
 	}
 })();
 
-// Deck Controller
+// DECK CONTROLLER
 const DeckCtrl = (function () {
-	// Deck constructor
-	const Deck = function(id, name, card) {
+	const Deck = function(id, name) {
 		this.id = id;
 		this.name = name;
 		this.cards = [];
-		this.addCard = function (card) {
+		this.addCard = function(card) {
 			this.cards.push(card.id, card.question, card.answer);
 		};
 	}
-	// Card constructor
-	const Card = function(id, question, answer) 	{
+	const Card = function(id, question, answer) {
 		this.id = id;
 		this.question = question;
 		this.answer = answer;
 	}
-	// Data constructor
 	const data = {
-		decks: [],
+		decks: [], // Take data from local storage
 		activeDeck: 0,
 		activeCard: 0,
 		activeCardID: 0
 	}
 
-	// Public methods
 	return {
-		addDeck: function(name, card) {
-			// Create ID
+		createID: () => {
 			let date = new Date();
 			let ID =
-				String(date.getSeconds()) +
-				String(date.getMinutes()) +
-				String(date.getHours()) +
-				String(date.getDay()) +
+				String(date.getFullYear()) +
 				String(date.getMonth()) +
-				String(date.getFullYear());
-
-			// Create new deck
-			newDeck = new Deck(ID, name, card);
-
-			// Save new deck data
+				String(date.getDay()) +	
+				String(date.getHours()) +
+				String(date.getMinutes()) +
+				String(date.getSeconds()) +
+				String(date.getMilliseconds());
+			return ID;
+		},
+		addDeck: (name) => {
+			let ID = DeckCtrl.createID();
+			newDeck = new Deck(ID, name);
 			data.decks.push(newDeck);
-
-			// Return new deck
-			return newDeck
+			return newDeck;
 		},
-		addCard: function(question, answer) {
-			// Create ID
-			let date = new Date();
-			let ID =
-				String(date.getSeconds()) +
-				String(date.getMinutes()) +
-				String(date.getHours()) +
-				String(date.getDay()) +
-				String(date.getMonth()) +
-				String(date.getFullYear());
-
-			// Create new card
+		addCard: (question, answer) => {
+			let ID = DeckCtrl.createID();
 			newCard = new Card(ID, question, answer);
-
-			// Append new card to deck data
 			data.decks[data.decks.length-1].cards.unshift(newCard);
-
-			// Return new card
-			return newCard
+			return newCard;
 		},
-		deleteCard: function(e) {
-			const cards = data.decks[data.activeDeck].cards
-			cards.forEach((card, index) => {
-				if (card.id === data.activeCardID) {
-					cards.splice(index, 1)
-				}
-			})
-		},
-		logData: function() {
-			return data
+		deleteCard: (deck, id) => {
+			const cards = deck.cards;
+			cards.forEach((card, index) => card.id === id && cards.splice(index, 1));
 		},
 		clearData: function() {
 			data.decks = [];
 			data.activeDeck = 0;
 			data.activeCard = 0;
-		}
+			data.activeCardID = 0;
+		},
+		logData: () => data
 	}
 })();
 
 
-// UI Controller
+// UI CONTROLLER
 const UICtrl = (function () {
+	// TODO: Simplify DOM selectors
 	const UISelectors = {
 		cube: ".cube",
 		mainSection: ".cube__side--main",
@@ -141,69 +98,114 @@ const UICtrl = (function () {
 		practiceSection: ".cube__side--practice",
 		statisticsSection: ".cube__side--statistics",
 		exitSectionBtn: ".section__exit-btn",
-		MsPracticeSectionBtn: "#practice-deck__btn",
-		MsPracticeSectionMenu: '#practice-deck__menu',
-		MsCreateSectionBtn: "#create-deck__btn",
-		MsCreateSectionInp: '#create-deck__name',
-		MsEditSectionBtn: "#edit-deck__btn",
-		MsEditSectionMenu: '#edit-deck__menu',
-		MsDeleteDeckMenu: '#delete-deck__menu',
-		MsStatisticsSectionBtn: "#statistics-deck__btn",
-		MsStatisticsSectionMenu: '#statistics-deck__menu',
-		CsCreateDeckNameInput: "#create-deck__name-input",
-		CsDeckNameSectionTitle: "#create-deck-name",
-		CsAddCardBtn: '#add-card-btn',
-		CsDeleteCardBtn: '#delete-card-btn',
-		CsEditCardBtn: '#edit-card-btn',
-		CsCardQuestion: '#create-deck__question',
-		CsCardAnswer: '#create-deck__answer',
-		CsCardSlider: '#create-deck__cards-slider',
-		CsCardSliderNavRight: '.card-nav__right',
-		CsCardSliderNavLeft: '.card-nav__left',
-		CsCardSliderIndex: '.card-nav__index-input',
-		CsCardSliderIndexLabel: '.card-nav__index-label',
-		CsCardActiveInner: '#create-deck__cards-slider .card.active .card__inner',
-		CsCardActiveFront: '#create-deck__cards-slider .card.active .card-question-text',
-		CsCardActiveBack: '#create-deck__cards-slider .card.active .card-answer-text',
-		CsCardActiveDeleteBtn: '#create-deck__cards-slider .card.active .delete-card-btn',
-		CsStoreDeckBtn: '#store-deck-btn',
-
+		msPracticeSectionBtn: "#practice-deck__btn",
+		msPracticeSectionMenu: '#practice-deck__menu',
+		msCreateSectionBtn: "#create-deck__btn",
+		msCreateSectionInp: '#create-deck__name',
+		msEditSectionBtn: "#edit-deck__btn",
+		msEditSectionMenu: '#edit-deck__menu',
+		msDeleteDeckBtn: '#delete-deck__btn',
+		msDeleteDeckMenu: '#delete-deck__menu',
+		msStatisticsSectionBtn: "#statistics-deck__btn",
+		msStatisticsSectionMenu: '#statistics-deck__menu',
+		csCreateDeckNameInp: "#create-deck__name-input",
+		csDeckNameSectionTitle: "#create-deck-name",
+		csAddCardBtn: '#add-card-btn',
+		csEditCardBtn: '#edit-card-btn',
+		csCardQuestionInp: '#create-deck__question',
+		csCardAnswerInp: '#create-deck__answer',
+		csCardSlider: '#create-deck__cards-slider',
+		csCardNavBtnRight: '.card-nav__right',
+		csCardNavBtnLeft: '.card-nav__left',
+		csCardSliderIndexInp: '#card-nav__index-input',
+		csCardSliderIndexLab: '.card-nav__index-label',
+		csCardActiveInner: '#create-deck__cards-slider .card.active .card__inner',
+		csCardActiveFront: '#create-deck__cards-slider .card.active .card-question-text',
+		csCardActiveBack: '#create-deck__cards-slider .card.active .card-answer-text',
+		csCardActiveDeleteBtn: '#create-deck__cards-slider .card.active .delete-card-btn',
+		csStoreDeckBtn: '#store-deck-btn',
 	};
 
-	// Public methods
 	return {
+		// General methods
 		getSelectors: () => UISelectors,
-		clearInputField: function (element) {
-			element.value = '';
-		},
-		printActiveCardFront: (e) => {
-			const questionInput = document.querySelector(UISelectors.CsCardQuestion).value;
-			questionInput.length > 80
-				? document.querySelector(UISelectors.CsCardActiveFront).textContent = questionInput.substring(0, 80) + '...'
-				: document.querySelector(UISelectors.CsCardActiveFront).textContent = questionInput;
-		},
-		printActiveCardBack: (e) => {
-			const answerInput = document.querySelector(UISelectors.CsCardAnswer).value;
-			answerInput.length > 80
-				? document.querySelector(UISelectors.CsCardActiveBack).textContent = answerInput.substring(0, 80) + '...'
-				: document.querySelector(UISelectors.CsCardActiveBack).textContent = answerInput;
-		},
-		clearActiveCardFront: (e) => {
-			document.querySelector(UISelectors.CsCardActiveFront).textContent = '';
-		},
-		clearActiveCardBack: (e) => {
-			document.querySelector(UISelectors.CsCardActiveBack).textContent = '';
-		},
+		clearInpVal: (element) => element.value = '',
 		flipCardFront: (card) => {
 			card.style.transform = 'rotate(0)';
 		},
 		flipCardBack: (card) => {
 			card.style.transform = 'rotateX(180deg)';
 		},
-		createCardsUI: (deck) => {
-			const cardsSlider = document.querySelector(UISelectors.CsCardSlider);
+		navigatePracticeSection: (e) => {
+			const cube = UISelectors.cube;
+			document.querySelector(cube).style.transform = "rotateX(-90deg)";
+		},
+		navigateCreateSection: (e) => {
+			const cube = UISelectors.cube;
+			document.querySelector(cube).style.transform = "rotateY(-90deg)";
+		},
+		navigateEditSection: (e) => {
+			const cube = UISelectors.cube;
+			document.querySelector(cube).style.transform = "rotateY(90deg)";
+		},
+		navigateStatisticsSection: (e) => {
+			const cube = UISelectors.cube;
+			document.querySelector(cube).style.transform = "rotateX(90deg)";
+		},
+		navigateMainSection: () => {
+			const cube = UISelectors.cube;
+			document.querySelector(cube).style.transform = "rotate(0)";
+		},
+		addDeckToSelectMenu: (menu, deck) => {
+			const menuEL = document.querySelector(menu);
+			const option = document.createElement('OPTION');
+			option.value = deck.name;
+			option.textContent = deck.name;
+			menuEL.appendChild(option);
+		},
+
+		// Create Section methods
+		csPrintTitle: (deckName) => {
+			const titleEL = document.querySelector(UISelectors.csDeckNameSectionTitle);
+			titleEL.textContent = deckName;
+		},
+		csPrintDeckName: (deckName) => {
+			const deckNameInp = document.querySelector(UISelectors.csCreateDeckNameInp);
+			deckNameInp.value = deckName;
+		},
+		csUpdateSectionTitle: (deckName) => {
+			const titleEl = document.querySelector(UISelectors.csDeckNameSectionTitle);
+			titleEl.textContent = deckName;
+		},
+		csPrintQuestion: (e) => {
+			const MAX_Q_LENGTH = 80;
+			let questionInput = document.querySelector(UISelectors.csCardQuestionInp).value;
+			let questionOutput = document.querySelector(UISelectors.csCardActiveFront);
+			questionInput.length > MAX_Q_LENGTH
+				? questionOutput.textContent = questionInput.substring(0, MAX_Q_LENGTH) + '...'
+				: questionOutput.textContent = questionInput;
+		},
+		csPrintAnswer: (e) => {
+			const MAX_A_LENGTH = 80;
+			let answerInput = document.querySelector(UISelectors.csCardAnswerInp).value;
+			let answerOutput = document.querySelector(UISelectors.csCardActiveBack);
+			answerInput.length > MAX_A_LENGTH
+				? answerOutput.textContent = answerInput.substring(0, MAX_A_LENGTH) + '...'
+				: answerOutput.textContent = answerInput;
+		},
+		csClearActiveCardFront: () => {
+			document.querySelector(UISelectors.csCardActiveFront).textContent = '';
+		},
+		csClearActiveCardBack: () => {
+			document.querySelector(UISelectors.csCardActiveBack).textContent = '';
+		},
+		csFocusQuestionInpEl: () => {
+			document.querySelector(UISelectors.csCardQuestionInp).focus();
+		},
+		csCreateCardUI: () => {
+			const cardsSlider = document.querySelector(UISelectors.csCardSlider);
 			const div = document.createElement('DIV');
-			div.className = 'card'
+			div.className = 'card';
 			div.innerHTML = `
 				<div class="card__inner">
 					<div class="card__inner--front">
@@ -215,520 +217,528 @@ const UICtrl = (function () {
 						<button class="delete-card-btn">x</button>
 					</div>
 				</div>
-			`
+			`;
 			cardsSlider.prepend(div);
 		},
-		sortCardsUI: (deck) => {
-			deck.cards.length > 0 && (document.querySelector(UISelectors.CsCardSlider).children[0].className = 'card prev')
-			// Make new card active (set as first)
-			deck.cards.length > 0 && (document.querySelector(UISelectors.CsCardSlider).children[1].className = 'card active')
-			// Make former new card second in line (set as second)
-			deck.cards.length > 0 && (document.querySelector(UISelectors.CsCardSlider).children[2].className = 'card first')
-			// Make former second card third in line (set as third)
-			deck.cards.length > 1 && (document.querySelector(UISelectors.CsCardSlider).children[3].className = 'card second')
-			//  Make third card fourth in line (set as fourth)
-			deck.cards.length > 2 && (document.querySelector(UISelectors.CsCardSlider).children[4].className = 'card third-and-up')
-		},	
-		updateCardIndex: () => {
-			const cardSliderIndexEl = document.querySelector(UISelectors.CsCardSliderIndex);
-			const cardSliderIndexLabelEl = document.querySelector(UISelectors.CsCardSliderIndexLabel);
+		csSortCardsUI: (deck) => {
+			const deckLength = deck.cards.length;
+			const cards = document.querySelector(UISelectors.csCardSlider).children;
+			deckLength > 0 && (cards[0].className = 'card prev');
+			deckLength > 0 && (cards[1].className = 'card active');
+			deckLength > 0 && (cards[2].className = 'card first');
+			deckLength > 1 && (cards[3].className = 'card second');
+			deckLength > 2 && (cards[4].className = 'card third-and-up');
+		},
+		csShowDeckNav: () => {
+			const cardNavBtnRight = document.querySelector(UISelectors.csCardNavBtnRight);
+			const cardNavBtnLeft = document.querySelector(UISelectors.csCardNavBtnLeft);
+			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards;
+			const activeCard = DeckCtrl.logData().activeCard;
+			activeDeck.length > activeCard
+				? cardNavBtnRight.classList.add('show')
+				: cardNavBtnRight.classList.remove('show');
+			activeCard > 0
+				? cardNavBtnLeft.classList.add('show')
+				: cardNavBtnLeft.classList.remove('show');
+		},
+		csShowNextCard: () => {
+			const cardsEls = Array.from(document.querySelector(UISelectors.csCardSlider).children);
+			const activeCard = DeckCtrl.logData().activeCard;
+			cardsEls.forEach((child, index) => {
+				if (child.classList.contains('card-nav')) return;
+				index === 3 + activeCard && (child.className = 'card second');
+				index === 2 + activeCard && (child.className = 'card first');
+				index === 1 + activeCard && (child.className = 'card active');
+				index === 0 + activeCard && (child.className = 'card prev');
+			});
+		},
+		csShowPrevCard: () => {
+			let cardsEls = Array.from(document.querySelector(UISelectors.csCardSlider).children);
+			let activeCard = DeckCtrl.logData().activeCard;
+			cardsEls.forEach((child, index) => {
+				if (child.classList.contains('card-nav')) return;
+				index === 4 + activeCard && (child.className = 'card third-and-up');
+				index === 3 + activeCard && (child.className = 'card second');
+				index === 2 + activeCard && (child.className = 'card first');
+				index === 1 + activeCard && (child.className = 'card active');
+				index === 0 + activeCard && (child.className = 'card prev');	
+			});
+		},
+		csDisplayCardInInputFields: () => {
+			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+			const activeCard = DeckCtrl.logData().activeCard;
+			const questionInputEl = document.querySelector(UISelectors.csCardQuestionInp);
+			const answerInputEl = document.querySelector(UISelectors.csCardAnswerInp);
+			if (activeCard > 0) {
+				const question = activeDeck.cards[activeCard - 1].question;
+				const answer = activeDeck.cards[activeCard - 1].answer;
+				questionInputEl.value = question;
+				answerInputEl.value = answer;
+			} else if (activeCard === 0) {
+				questionInputEl.value = '';
+				answerInputEl.value = '';
+				questionInputEl.focus();
+			};
+		},
+		csShowEditCardBtn: () => {
+			const activeCard = DeckCtrl.logData().activeCard
+			if (activeCard > 0) {
+				document.querySelector(UISelectors.csAddCardBtn).classList.remove('show');
+				document.querySelector(UISelectors.csEditCardBtn).classList.add('show');
+			}
+		},
+		csShowAddCardBtn: () => {
+			const activeCard = DeckCtrl.logData().activeCard
+			if (activeCard === 0) {
+				document.querySelector(UISelectors.csAddCardBtn).classList.add('show');
+				document.querySelector(UISelectors.csEditCardBtn).classList.remove('show');
+			}
+		},
+		csResetPrevLastCardText: () => {
+			const activeCard = DeckCtrl.logData().activeCard;
+			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+			const lastCard = document.querySelector(UISelectors.csCardSlider).children[activeCard];
+			const lastCardQuestion = lastCard.firstElementChild.children[0].firstElementChild;
+			const lastCardAnswer = lastCard.firstElementChild.children[1].firstElementChild;
+			//! Quick Fix: preview card should return cleared if card is not added.
+			lastCardQuestion.textContent = '';
+			lastCardAnswer.textContent = '';
+			if (activeCard - 1 > 0) {
+				lastCardQuestion.textContent = activeDeck.cards[activeCard - 2].question;
+				lastCardAnswer.textContent = activeDeck.cards[activeCard - 2].answer;
+			}
+		},
+		csResetNextLastCardText: () => {
+			const activeCard = DeckCtrl.logData().activeCard;
+			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+			const lastCard = document.querySelector(UISelectors.csCardSlider).children[activeCard + 2];
+			const lastCardQuestion = lastCard.firstElementChild.children[0].firstElementChild;
+			const lastCardAnswer = lastCard.firstElementChild.children[1].firstElementChild;
+			lastCardQuestion.textContent = activeDeck.cards[activeCard].question;
+			lastCardAnswer.textContent = activeDeck.cards[activeCard].answer;
+		},
+		csResetPreviewCardText: () => {
+			const prevCard = document.querySelector(UISelectors.csCardSlider).children[1];
+			const prevCardQuestion = prevCard.firstElementChild.children[0].firstElementChild;
+			const prevCardAnswer = prevCard.firstElementChild.children[1].firstElementChild;
+			prevCardQuestion.textContent = '';
+			prevCardAnswer.textContent = '';
+		},
+		csSetCardIndexInpText: () => {
+			const cardSliderIndexInpEl = document.querySelector(UISelectors.csCardSliderIndexInp);
+			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards;
+			const activeCard = DeckCtrl.logData().activeCard;
+			cardSliderIndexInpEl.value = activeDeck.length - activeCard + 1;
+		},
+		csSetDeckLengthLabText: () => {
+			const activeDeck = DeckCtrl.logData().activeDeck;
+			const activeDeckLength = DeckCtrl.logData().decks[activeDeck].cards.length;
+			const csDeckLengthIndexLabEl = document.querySelector(UISelectors.csCardSliderIndexLab);
+			csDeckLengthIndexLabEl.textContent = activeDeckLength;
+		},
+		csDeleteCardFromSlider: (e) => {
+			const card = e.target.parentElement.parentElement.parentElement;
+			card.remove();
+		},
+		csClearDeckUI: () => {
+			const sliderEl = document.querySelector(UISelectors.csCardSlider);
+			Array.from(sliderEl.children).forEach(card => card.remove());
+		},
+		csSetupDeckSliderUI: () => {
+			const sliderEl = document.querySelector(UISelectors.csCardSlider);
+			for (let i = 2; i > 0; i--) {
+				const card = document.createElement('DIV');
+				card.className = `card ${i === 2 ? 'prev' : 'active'}`;
+				card.innerHTML = `
+					<div class="card__inner">
+						<div class="card__inner--front">
+							<p class="card-text card-question-text"></p>
+							<button class="delete-card-btn">x</button>
+						</div>
+						<div class="card__inner--back">
+							<p class="card-text card-answer-text"></p>
+							<button class="delete-card-btn">x</button>
+						</div>
+					</div>
+				`;
+				sliderEl.appendChild(card);
+			};
 
-			cardSliderIndexEl.value = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards.length - DeckCtrl.logData().activeCard + 1;
+			const nav = document.createElement('DIV');
+			nav.className ='card-nav';
+			nav.innerHTML = `
+				<div class="card-nav__right">)</div>
+				<div class="card-nav__left">(</div>
+				<div class="card-nav__index">
+					<input type="number" id="card-nav__index-input" class="card-nav__index-input" value="1">
+					<label for="card-nav__index-input" id="card-nav__index-label" class="card-nav__index-label">0</label>
+				</div>
+			`;
+			sliderEl.appendChild(nav);
+		},
 
-			cardSliderIndexLabelEl.innerHTML = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards.length;
-		},
-		displayCardInInputFields: () => {
-			if (DeckCtrl.logData().activeCard > 0) {
-				const question = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 1].question;
-				const answer = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 1].answer;;
-				document.querySelector(UISelectors.CsCardQuestion).value = question;
-				document.querySelector(UISelectors.CsCardAnswer).value = answer;
-			} else if (DeckCtrl.logData().activeCard === 0) {
-				document.querySelector(UISelectors.CsCardQuestion).value = '';
-				document.querySelector(UISelectors.CsCardAnswer).value = '';
-				document.querySelector(UISelectors.CsCardQuestion).focus();
-			}
-		},
-		showEditCardBtn: () => {
-			if (DeckCtrl.logData().activeCard > 0) {
-				document.querySelector(UISelectors.CsAddCardBtn).classList.remove('show');
-				document.querySelector(UISelectors.CsEditCardBtn).classList.add('show');
-			}
-		},
-		showAddCardBtn: () => {
-			if (DeckCtrl.logData().activeCard === 0) {
-				document.querySelector(UISelectors.CsAddCardBtn).classList.add('show');
-				document.querySelector(UISelectors.CsEditCardBtn).classList.remove('show');
-			}
-		},
-		removeCardsUI: () => {
-			const cards = Array.from(document.querySelector(UISelectors.CsCardSlider).children)
-			cards.forEach((card, index) => {
-				if (index > 1 && index < cards.length - 1) {
-					card.remove();
-				}
-			})
-		},
-		resetCardIndexCount: () => {
-			document.querySelector(UISelectors.CsCardSliderIndex).value = 1;
-			document.querySelector(UISelectors.CsCardSliderIndexLabel).textContent = 0;
-		},
-		deleteCardUI: (e) => {
-			e.path[3].remove();
-		},
-		printDeckMenuOption: (menu, deck) => {
-			const option = document.createElement('OPTION');
-			option.value = deck.name;
-			option.textContent = deck.name;
-			document.querySelector(menu).appendChild(option);
+		csNavDeckByIndexInp: (activeCard) => {
+			activeCard = Number(activeCard);
+			const cardsEls = Array.from(document.querySelector(UISelectors.csCardSlider).children);
+			cardsEls.forEach((child, index) => {
+				if (child.classList.contains('prev')
+						|| child.classList.contains('active')
+						|| child.classList.contains('first')
+						|| child.classList.contains('second')) {
+					child.className = 'card';
+				};
+				if (child.classList.contains('card-nav')) return;
+				index === 3 + activeCard && (child.className = 'card second');
+				index === 2 + activeCard && (child.className = 'card first');
+				index === 1 + activeCard && (child.className = 'card active');
+				index === 0 + activeCard && (child.className = 'card prev');
+			});
 		}
+
 	}
 })();
 
-// App Controller
+// APP CONTROLLER
 const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
-	// Load event listeners
-	const loadEventListeners = function () {
-		const UISelectors = UICtrl.getSelectors();
+	// EVENT LISTENERS	
+	const loadEventListeners = () => {
+		const DOM = UICtrl.getSelectors();
 		document
-			.querySelector(UISelectors.MsPracticeSectionBtn)
-			.addEventListener("click", navigatePracticeSection);
+			.querySelector(DOM.msPracticeSectionBtn)
+			.addEventListener("click", msPracticeSectionSubmit);
 		document
-			.querySelector(UISelectors.MsCreateSectionBtn)
-			.addEventListener("click", (e) => {
-				navigateCreateSection(e);
-				createDeck(e);
-				UICtrl.clearInputField(e.target.parentElement.firstElementChild);
-			});
+			.querySelector(DOM.msPracticeSectionMenu)
+			.addEventListener('keypress', msPracticeSectionMenuKeyEnter);
 		document
-			.querySelector(UISelectors.MsCreateSectionInp)
-			.addEventListener('keypress', (e) => {
-				if (e.key === 'Enter') {
-					navigateCreateSection(e);
-					createDeck(e);
-					UICtrl.clearInputField(e.target.parentElement.firstElementChild);
-				}
-			});
+			.querySelector(DOM.msCreateSectionBtn)
+			.addEventListener("click", msCreateSectionSubmit);
 		document
-			.querySelector(UISelectors.MsEditSectionBtn)
-			.addEventListener("click", navigateEditSection);
+			.querySelector(DOM.msCreateSectionInp)
+			.addEventListener('keypress', msCreateSectionMenuKeyEnter);
 		document
-			.querySelector(UISelectors.MsEditSectionMenu)
-			.addEventListener('keypress', (e) => {
-				if (e.key === 'Enter') {
-					navigateEditSection(e);
-				}
-			});
+			.querySelector(DOM.msEditSectionBtn)
+			.addEventListener("click", msEditSectionSubmit);
 		document
-			.querySelector(UISelectors.MsStatisticsSectionMenu)
-			.addEventListener("click", navigateStatisticsSection);
+			.querySelector(DOM.msEditSectionMenu)
+			.addEventListener('keypress', msEditSectionMenuKeyEnter);
 		document
-			.querySelector(UISelectors.MsEditSectionBtn)
-			.addEventListener('keypress', (e) => {
-				if (e.key === 'Enter') {
-					navigateStatisticsSection(e);
-				}
-			});
+			.querySelector(DOM.msDeleteDeckBtn)
+			.addEventListener('click', msDeleteDeckSubmit);
 		document
-			.querySelectorAll(UISelectors.exitSectionBtn)
-			.forEach((btn) => btn.addEventListener("click", navigateMainSection));
-		
+			.querySelector(DOM.msDeleteDeckMenu)
+			.addEventListener('keypress', msDeleteDeckMenuKeyEnter);
 		document
-			.querySelector(UISelectors.CsCreateDeckNameInput)
-			.addEventListener('input', (e) => {
-				UICtrl.printActiveCardFront(e);
-				CsUpdateDeckNameSectionTitle(e);
-			});
-		// Create new card
+			.querySelector(DOM.msStatisticsSectionBtn)
+			.addEventListener('click', msStatisticsSectionSubmit);
 		document
-			.querySelector(UISelectors.CsAddCardBtn)
-			.addEventListener('click', (e) => {
-				e.preventDefault();
-				// Only continue when both fields have input
-				if (document.querySelector(UISelectors.CsCardQuestion).value === '' || document.querySelector(UISelectors.CsCardAnswer).value === '') return;
-				// Add card to data deck
-				CsCreateNewCard(e);
-				// Sort deck	
-				UICtrl.sortCardsUI(DeckCtrl.logData().decks[0]);
-				// Flip newly made card to front (question)
-				UICtrl.flipCardFront(Array.from(document.querySelector(UISelectors.CsCardSlider).children)[2].firstElementChild);
-				// Clear both input fields question and answer
-				UICtrl.clearInputField(document.querySelector(UISelectors.CsCardQuestion));
-				UICtrl.clearInputField(document.querySelector(UISelectors.CsCardAnswer));
-				// Clear printed front and back side active card
-				UICtrl.clearActiveCardFront(e);
-				UICtrl.clearActiveCardBack(e);
-				document.querySelector(UISelectors.CsCardQuestion).focus();
-				showDeckNav(e);
-			});
-		// Add input to card
+			.querySelector(DOM.msStatisticsSectionMenu)
+			.addEventListener("keypress", msStatisticsSectionMenuKeyEnter);
 		document
-			.querySelector(UISelectors.CsCardQuestion)
-			.addEventListener('input', UICtrl.printActiveCardFront);
+			.querySelectorAll(DOM.exitSectionBtn)
+			.forEach((btn) => btn.addEventListener("click", exitSectionSubmit));
 		document
-			.querySelector(UISelectors.CsCardAnswer)
-			.addEventListener('input', UICtrl.printActiveCardBack);
-		// Flip Card
+			.querySelector(DOM.csCreateDeckNameInp)
+			.addEventListener('input', csCreateDeckNameInp);
 		document
-			.querySelector(UISelectors.CsCardQuestion)
-			.addEventListener('focus', () => {
-				UICtrl.flipCardFront(document.querySelector(UISelectors.CsCardActiveInner));
-			});
+			.querySelector(DOM.csCardQuestionInp)
+			.addEventListener('input', csCardQuestionInp);
 		document
-			.querySelector(UISelectors.CsCardAnswer)
-			.addEventListener('focus', () => {
-				UICtrl.flipCardBack(document.querySelector(UISelectors.CsCardActiveInner));
-			});
+			.querySelector(DOM.csCardAnswerInp)
+			.addEventListener('input', csCardAnswerInp);
 		document
-			.querySelector(UISelectors.CsCardSlider)
-			.addEventListener('click', (e) => {
-				if (e.target.parentElement.parentElement.className === 'card active') {
-					if (e.target.className === 'card__inner--front') {
-						UICtrl.flipCardBack(e.target.parentElement);
-						document.querySelector(UISelectors.CsCardAnswer).select();
-					} else if (e.target.className === 'card__inner--back') {
-						UICtrl.flipCardFront(e.target.parentElement);
-						document.querySelector(UISelectors.CsCardQuestion).select();
-					}
-				}
-			});
+			.querySelector(DOM.csAddCardBtn)
+			.addEventListener('click', csAddCardSubmit);
 		document
-			.querySelector(UISelectors.CsEditCardBtn)
-			.addEventListener('click', CsEditCard);
+			.querySelector(DOM.csCardQuestionInp)
+			.addEventListener('focus', csCardQuestionInpFocus);
 		document
-			.querySelector(UISelectors.CsStoreDeckBtn)
-			.addEventListener('click', (e) => {
-				const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck]
-				if (!activeDeck.cards.length > 0) return
-				StorageCtrl.storeDeck(DeckCtrl.logData().decks[0]);
-				navigateMainSection(e);
-				DeckCtrl.clearData();
-				UICtrl.removeCardsUI();
-				UICtrl.resetCardIndexCount();
-				UICtrl.printDeckMenuOption(UISelectors.MsPracticeSectionMenu, activeDeck);
-				UICtrl.printDeckMenuOption(UISelectors.MsEditSectionMenu, activeDeck);
-				UICtrl.printDeckMenuOption(UISelectors.MsDeleteDeckMenu, activeDeck);
-				UICtrl.printDeckMenuOption(UISelectors.MsStatisticsSectionMenu, activeDeck);
-			});
+			.querySelector(DOM.csCardAnswerInp)
+			.addEventListener('focus', csCardAnswerInpFocus);
 		document
-			.querySelector(UISelectors.CsCardSliderIndex)
-			.addEventListener('input', deckNavByIndex);
+			.querySelector(DOM.csEditCardBtn)
+			.addEventListener('click', csEditCardSubmit);
 		document
-			.querySelector(UISelectors.CsCardSlider)
-			.addEventListener('click', deleteCard);
-		document.addEventListener('DOMContentLoaded', (e) => {
-			JSON.parse(localStorage.getItem('decks')).forEach(deck => {
-				UICtrl.printDeckMenuOption(UISelectors.MsPracticeSectionMenu, deck);
-				UICtrl.printDeckMenuOption(UISelectors.MsEditSectionMenu, deck);
-				UICtrl.printDeckMenuOption(UISelectors.MsDeleteDeckMenu, deck);
-				UICtrl.printDeckMenuOption(UISelectors.MsStatisticsSectionMenu, deck);
-			})
-		});
+			.querySelector(DOM.csCardSlider)
+			.addEventListener('click', csCardClick);
+		document
+			.querySelector(DOM.csCardSlider)
+			.addEventListener('click', csDeleteCardBtn);
+		document
+			.querySelector(DOM.csCardSlider)
+			.addEventListener('click', csDeckNavBtn);
+		document
+			.querySelector(DOM.csCardSlider)
+			.addEventListener('input', csCardSliderIndexInpNav);
+		document
+			.querySelector(DOM.csStoreDeckBtn)
+			.addEventListener('click', csStoreDeckSubmit);
 	};
 
 	
-	// Navigate sections
-	const navigatePracticeSection = (e) => {
+	// FUNCTIONS
+	const msPracticeSectionSubmit = (e) => {
 		e.preventDefault();
-		const inputDeckCreate = e.target.parentElement.firstElementChild.value;
-		if (!inputDeckCreate) return;
-		const cube = UICtrl.getSelectors().cube;
-		document.querySelector(cube).style.transform = "rotateX(-90deg)";
+		const msPracticeSectionInpVal = e.target.parentElement.firstElementChild.value;
+		if (!msPracticeSectionInpVal) return
+		UICtrl.navigatePracticeSection(e);
 	};
-	const navigateCreateSection = (e) => {
+	
+	const msPracticeSectionMenuKeyEnter = (e) => {
+		const msPracticeSectionInpVal = e.target.value;
+		if (!msPracticeSectionInpVal || e.key !== 'Enter') return;
+		UICtrl.navigatePracticeSection(e);
+	};
+
+	const msCreateSectionSubmit = (e) => {
 		e.preventDefault();
-		const inputDeckCreate = e.target.parentElement.firstElementChild.value;
-		if (!inputDeckCreate) return;
-		const cube = UICtrl.getSelectors().cube;
-		document.querySelector(cube).style.transform = "rotateY(-90deg)";
-	};
-	const navigateEditSection = (e) => {
-		e.preventDefault();
-		const inputDeckCreate = e.target.parentElement.firstElementChild.value;
-		if (!inputDeckCreate) return;
-		const cube = UICtrl.getSelectors().cube;
-		document.querySelector(cube).style.transform = "rotateY(90deg)";
-	};
-	const navigateStatisticsSection = (e) => {
-		e.preventDefault();
-		const inputDeckCreate = e.target.parentElement.firstElementChild.value;
-		if (!inputDeckCreate) return;
-		const cube = UICtrl.getSelectors().cube;
-		document.querySelector(cube).style.transform = "rotateX(90deg)";
-	};
-	const navigateMainSection = (e) => {
-		e.preventDefault();
-		const cube = UICtrl.getSelectors().cube;
-		document.querySelector(cube).style.transform = "rotate(0)";
-	};
-	// Create deck
-	const createDeck = (e) => {
-		const createDeckName = e.target.parentElement.firstElementChild.value;
 		const UISelectors = UICtrl.getSelectors();
-		const deckName = DeckCtrl.addDeck(createDeckName).name;
-		document.querySelector(UISelectors.CsCreateDeckNameInput).value = deckName;
-		document.querySelector(UISelectors.CsDeckNameSectionTitle).textContent = deckName;
+		if (!document.querySelector(UISelectors.msCreateSectionInp).value) return;
+		UICtrl.csClearDeckUI();
+		UICtrl.csSetupDeckSliderUI();
+		UICtrl.navigateCreateSection(e);
+		DeckCtrl.addDeck(document.querySelector(UISelectors.msCreateSectionInp).value);
+		UICtrl.csPrintTitle(document.querySelector(UISelectors.msCreateSectionInp).value);
+		UICtrl.csPrintDeckName(document.querySelector(UISelectors.msCreateSectionInp).value);
+		UICtrl.clearInpVal(document.querySelector(UISelectors.msCreateSectionInp));
 	};
-	// Update deck title
-	const CsUpdateDeckNameSectionTitle = (e) => {
+	
+	const msCreateSectionMenuKeyEnter = (e) => {
 		const UISelectors = UICtrl.getSelectors();
-		document.querySelector(UISelectors.CsDeckNameSectionTitle).textContent = document.querySelector(UISelectors.CsCreateDeckNameInput).value;
+		const msCreateSectionInpVal = e.target.value;
+		if (!msCreateSectionInpVal || e.key !== 'Enter') return;
+		UICtrl.csClearDeckUI();
+		UICtrl.csSetupDeckSliderUI();
+		UICtrl.navigateCreateSection(e);
+		DeckCtrl.addDeck(msCreateSectionInpVal);
+		UICtrl.csPrintTitle(msCreateSectionInpVal);
+		UICtrl.csPrintDeckName(msCreateSectionInpVal);
+		UICtrl.clearInpVal(e.target);
+	};
+
+	const msEditSectionSubmit = (e) => {
+		e.preventDefault();
+		const msEditSectionInpVal = e.target.parentElement.firstElementChild.value;
+		if (!msEditSectionInpVal) return;
+		UICtrl.navigateEditSection(e);
+	};
+
+	const msEditSectionMenuKeyEnter = (e) => {
+		const msEditSectionInpVal = e.target.value;
+		if (!msEditSectionInpVal || !e.key === 'Enter') return;
+		UICtrl.navigateEditSection(e);
+	};
+
+	const msDeleteDeckSubmit = (e) => {
+		e.preventDefault();
+		const msDeleteSectionInpVal = e.target.parentElement.firstElementChild.value;
+		if (!msDeleteSectionInpVal) return;
 	}
-	// Create card
-	const CsCreateNewCard = (e) => {
+
+	const msDeleteDeckMenuKeyEnter = (e) => {
+		const msDeleteDeckInpVal = e.target.value;
+		if (!msDeleteDeckInpVal || !e.key === 'Enter') return;
+	};
+
+	const msStatisticsSectionSubmit = (e) => {
+		e.preventDefault();
+		const msStatisticsSectionInpVal = e.target.parentElement.firstElementChild.value;
+		if (!msStatisticsSectionInpVal) return;
+	};
+
+	const msStatisticsSectionMenuKeyEnter = (e) => {
+		const msStatisticsSectionInpVal = e.target.value;
+		if (!msStatisticsSectionInpVal || !e.key === 'Enter') return;
+		UICtrl.navigateStatisticsSection(e);
+	};
+
+	const exitSectionSubmit = () => {
+		UICtrl.navigateMainSection();
+	};		
+
+	const csCreateDeckNameInp = () => {
+		const UISelectors = UICtrl.getSelectors();
+		const deckNameInp = document.querySelector(UISelectors.csCreateDeckNameInp).value;
+		UICtrl.csUpdateSectionTitle(deckNameInp);
+		DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].deckName = deckNameInp;
+	};
+
+	const csCardQuestionInp = () => {
+		UICtrl.csPrintQuestion();
+	};
+
+	const csCardAnswerInp = () => {
+		UICtrl.csPrintAnswer();
+	};
+
+	const csAddCardSubmit = (e) => {
 		e.preventDefault();
 		const UISelectors = UICtrl.getSelectors();
-		const CsCardQuestion = document.querySelector(UISelectors.CsCardQuestion).value;
-		const CsCardAnswer = document.querySelector(UISelectors.CsCardAnswer).value;
-		const newCard = DeckCtrl.addCard(CsCardQuestion, CsCardAnswer);
-		UICtrl.createCardsUI(DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck]);
-		UICtrl.updateCardIndex();
+		const question = document.querySelector(UISelectors.csCardQuestionInp).value;
+		const answer = document.querySelector(UISelectors.csCardAnswerInp).value;
+		if (question === '' || answer === '') return;
+		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		const activeInnerCardEl = Array.from(document.querySelector(UISelectors.csCardSlider).children)[1].firstElementChild;
+		DeckCtrl.addCard(question, answer);
+		UICtrl.csCreateCardUI();
+		UICtrl.csSortCardsUI(activeDeck);
+		UICtrl.flipCardFront(activeInnerCardEl);
+		UICtrl.clearInpVal(document.querySelector(UISelectors.csCardQuestionInp));
+		UICtrl.clearInpVal(document.querySelector(UISelectors.csCardAnswerInp));
+		UICtrl.csClearActiveCardFront();
+		UICtrl.csClearActiveCardBack();
+		UICtrl.csFocusQuestionInpEl();
+		UICtrl.csShowDeckNav();
+		UICtrl.csSetCardIndexInpText();
+		UICtrl.csSetDeckLengthLabText();
 	};
-	// Navigate cards
-	const showDeckNav = () => {
-		const UISelectors = UICtrl.getSelectors();
-		const cardNavRight = document.querySelector(UISelectors.CsCardSliderNavRight);
-		const cardNavLeft = document.querySelector(UISelectors.CsCardSliderNavLeft);
 
-		// Add arrow right
-		if (DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards.length > DeckCtrl.logData().activeCard) {
-			cardNavRight.classList.add('show');
-			cardNavRight.addEventListener('click', showNextCard);
-		} else {
-			cardNavRight.classList.remove('show');
-		}
-
-		// Add arrow left
-		if (DeckCtrl.logData().activeCard > 0) {
-			cardNavLeft.classList.add('show');
-			cardNavLeft.addEventListener('click', showPreviousCard);
-		} else {
-			cardNavLeft.classList.remove('show');
-		}
+	const csDeckNavBtn = (e) => {	
+		if (!(e.target.classList.contains('card-nav__right') || e.target.classList.contains('card-nav__left'))) return;
+		if (e.target.classList.contains('card-nav__right')) {
+			DeckCtrl.logData().activeCard++;
+			UICtrl.csShowNextCard();
+			UICtrl.csResetPrevLastCardText();
+		};
+		if (e.target.classList.contains('card-nav__left')) {
+			DeckCtrl.logData().activeCard--;
+			UICtrl.csShowPrevCard();
+			UICtrl.csResetNextLastCardText();
+		};
+		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		const activeCard = DeckCtrl.logData().activeCard;
+		let newCardID = activeCard > 0 ? activeDeck.cards[activeCard - 1].id : 0;
+		DeckCtrl.logData().activeCardID = newCardID;
+		UICtrl.csDisplayCardInInputFields();
+		UICtrl.csShowAddCardBtn();
+		UICtrl.csShowEditCardBtn();
+		UICtrl.csShowDeckNav();
+		UICtrl.csSetCardIndexInpText();
 	};
 	
-	const showNextCard = (e) => {
+	const csCardQuestionInpFocus = () => {
 		const UISelectors = UICtrl.getSelectors();
-		DeckCtrl.logData().activeCard++;
-		DeckCtrl.logData().activeCardID = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 1].id;
-		let activeCard = DeckCtrl.logData().activeCard;
-		showDeckNav();
-		UICtrl.updateCardIndex();
-		Array.from(document.querySelector(UISelectors.CsCardSlider).children).forEach((child, index) => {
-			if (index === 3 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card second'
-			};
-			if (index === 2 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card first'
-			};
-			if (index === 1 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card active'
-			};
-			if (index === 0 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card prev'
-			};
-		})
-		UICtrl.displayCardInInputFields();
-		UICtrl.showAddCardBtn();
-		UICtrl.showEditCardBtn();
-
-
-		// Reset card question & answer text when chosen to not edit
-		if (DeckCtrl.logData().activeCard > 1) {
-			const lastCard = document.querySelector(UISelectors.CsCardSlider).children[DeckCtrl.logData().activeCard];
-			lastCard.firstElementChild.children[0].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 2].question;
-			lastCard.firstElementChild.children[1].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 2].answer;
+		UICtrl.flipCardFront(document.querySelector(UISelectors.csCardActiveInner));
+	};
+	
+	const csCardAnswerInpFocus = () => {
+		const UISelectors = UICtrl.getSelectors();
+		UICtrl.flipCardBack(document.querySelector(UISelectors.csCardActiveInner));
+	};
+	
+	const csCardClick = (e) => {	
+		const target = e.target;
+		if (!target.parentElement.parentElement.classList.contains('active')) return;
+		if (target.classList.contains('card__inner--front')) {
+			UICtrl.flipCardBack(target.parentElement);
+		} else if (target.classList.contains('card__inner--back')) {
+			UICtrl.flipCardFront(target.parentElement);
 		};
 	};
-	const showPreviousCard = (e) => {
-		const UISelectors = UICtrl.getSelectors();
-		DeckCtrl.logData().activeCard--;
-
-		if (DeckCtrl.logData().activeCard > 0) {
-			DeckCtrl.logData().activeCardID = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 1].id;
-		}
-
-		let activeCard = DeckCtrl.logData().activeCard;
-		showDeckNav();
-		UICtrl.updateCardIndex();
-		Array.from(document.querySelector(UISelectors.CsCardSlider).children).forEach((child, index) => {
-			if (!child.classList.contains('card-nav')) {
-				if (index === 4 + activeCard) {
-					child.className = 'card third-and-up'
-				};
-				if (index === 3 + activeCard) {
-					child.className = 'card second'
-				};
-				if (index === 2 + activeCard) {
-					child.className = 'card first'
-				};
-				if (index === 1 + activeCard) {
-					child.className = 'card active'
-				};
-				if (index === 0 + activeCard) {
-					child.className = 'card prev'
-				};	
-			};
-		});
-		UICtrl.displayCardInInputFields();
-		UICtrl.showAddCardBtn();
-		UICtrl.showEditCardBtn();
-
-		
-		// Reset card question & answer text when chosen to not edit
-		if (DeckCtrl.logData().activeCard > 1) {
-			const lastCard = document.querySelector(UISelectors.CsCardSlider).children[DeckCtrl.logData().activeCard + 2];
-			lastCard.firstElementChild.children[0].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard].question;
-			lastCard.firstElementChild.children[1].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard].answer;
-		};
-	};
-	const deckNavByIndex = (e) => {
-		const UISelectors = UICtrl.getSelectors();
+	
+	const csEditCardSubmit = (e) => {
 		e.preventDefault();
-
-		let inputValue;
-		const deckLength = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards.length;
-
-		if (e.target.value > deckLength + 1) {
-			inputValue = deckLength + 1;
-			e.target.value = deckLength + 1;
-		} else {
-			inputValue = e.target.value;
-		}
-		DeckCtrl.logData().activeCard = (deckLength + 1) - inputValue;
-		const activeCard = DeckCtrl.logData().activeCard;
-		if (!inputValue || inputValue > deckLength + 1) return;
-
-		Array.from(document.querySelector(UISelectors.CsCardSlider).children).forEach((child, index) => {
-			if (child.classList.contains('prev') ||
-				child.classList.contains('active') ||
-				child.classList.contains('first') ||
-				child.classList.contains('second')) {
-				child.className = 'card';
-			}
-			if (index === 3 + activeCard && !child.classList.contains('card-nav')) {
-			child.className = 'card second'
-		};
-			if (index === 2 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card first'
-			};
-			if (index === 1 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card active'
-			};
-			if (index === 0 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card prev'
-			};
-		})
-		showDeckNav();
-		UICtrl.showAddCardBtn();
-		UICtrl.showEditCardBtn();
-		UICtrl.displayCardInInputFields();
-	};
-	// Edit card
-	const CsEditCard = (e) => {
-		e.preventDefault();
-		const UISelectors = UICtrl.getSelectors();
-		const newQuestion = document.querySelector(UISelectors.CsCardQuestion).value;
-		const newAnswer = document.querySelector(UISelectors.CsCardAnswer).value; 
+		const DOM = UICtrl.getSelectors();
+		const newQuestion = document.querySelector(DOM.csCardQuestionInp).value;
+		const newAnswer = document.querySelector(DOM.csCardAnswerInp).value; 
 		const cardIndex = DeckCtrl.logData().activeCard - 1;
-		const currentDeckData = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[cardIndex];
-		currentDeckData.question = newQuestion;
-		currentDeckData.answer = newAnswer;
+		const currentCardData = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[cardIndex];
+		currentCardData.question = newQuestion;
+		currentCardData.answer = newAnswer;
 	};
-	// Delete card
-	const deleteCard = (e) => {
+
+	// TODO : Need proper refactoring 
+	const csDeleteCardBtn = (e) => {
 		e.preventDefault();
-		const currentCard = DeckCtrl.logData().activeCard;
-		const currentDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
-		
-		if (!e.target.classList.contains('delete-card-btn') && !e.path[3].classList.contains('active')) return
-		DeckCtrl.deleteCard(e);
-		UICtrl.deleteCardUI(e);
-		
-		if (currentCard >= currentDeck.cards.length) {
-			showPreviousCardUI(e);
+		const card = e.target.parentElement.parentElement.parentElement;
+		if (!e.target.classList.contains('delete-card-btn')) return;
+		if (!card.classList.contains('active')) return;
+		const activeCard = DeckCtrl.logData().activeCard;
+		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		const cardID = DeckCtrl.logData().activeCardID
+		DeckCtrl.deleteCard(activeDeck, cardID);
+		UICtrl.csDeleteCardFromSlider(e);
+	
+		let newCardID
+		if (activeCard > activeDeck.cards.length) {
+			DeckCtrl.logData().activeCard--;
+			UICtrl.csShowPrevCard();
+			newCardID = activeCard > 2 ? newCardID = activeDeck.cards[activeCard - 2].id : 0;
 		} else {
-			showNextCardUI(e);
-		}
-	};
-	// Show next card after card deletion
-	const showNextCardUI = (e) => {
-		const UISelectors = UICtrl.getSelectors();
-		DeckCtrl.logData().activeCardID = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 1].id;
-		let activeCard = DeckCtrl.logData().activeCard;
-		showDeckNav();
-		UICtrl.updateCardIndex();
-		Array.from(document.querySelector(UISelectors.CsCardSlider).children).forEach((child, index) => {
-			if (index === 3 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card second'
-			};
-			if (index === 2 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card first'
-			};
-			if (index === 1 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card active'
-			};
-			if (index === 0 + activeCard && !child.classList.contains('card-nav')) {
-				child.className = 'card prev'
-			};
-		})
-		UICtrl.displayCardInInputFields();
-		UICtrl.showAddCardBtn();
-		UICtrl.showEditCardBtn();
-
-
-		// Reset card question & answer text when chosen to not edit
-		if (DeckCtrl.logData().activeCard > 1) {
-			const lastCard = document.querySelector(UISelectors.CsCardSlider).children[DeckCtrl.logData().activeCard];
-			lastCard.firstElementChild.children[0].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 2].question;
-			lastCard.firstElementChild.children[1].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 2].answer;
+			UICtrl.csShowNextCard();
+			newCardID = activeCard > 0 ? newCardID = activeDeck.cards[activeCard - 1].id : 0;
 		};
+		UICtrl.csShowDeckNav();
+		UICtrl.csSetCardIndexInpText();
+		UICtrl.csSetDeckLengthLabText();
+		UICtrl.csDisplayCardInInputFields();
+		DeckCtrl.logData().activeCardID = newCardID;
 	};
-	const showPreviousCardUI = (e) => {
-		const UISelectors = UICtrl.getSelectors();
-		DeckCtrl.logData().activeCard--;
-		if (DeckCtrl.logData().activeCard > 0) {
-			DeckCtrl.logData().activeCardID = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard - 1].id;
-		}
-		let activeCard = DeckCtrl.logData().activeCard;
-		showDeckNav();
-		UICtrl.updateCardIndex();
-		Array.from(document.querySelector(UISelectors.CsCardSlider).children).forEach((child, index) => {
-			if (!child.classList.contains('card-nav')) {
-				if (index === 4 + activeCard) {
-					child.className = 'card third-and-up'
-				};
-				if (index === 3 + activeCard) {
-					child.className = 'card second'
-				};
-				if (index === 2 + activeCard) {
-					child.className = 'card first'
-				};
-				if (index === 1 + activeCard) {
-					child.className = 'card active'
-				};
-				if (index === 0 + activeCard) {
-					child.className = 'card prev'
-				};	
-			};
+
+	const csStoreDeckSubmit = () => {
+		const DOM = UICtrl.getSelectors();
+		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		console.log(activeDeck);
+		if (!activeDeck.cards.length > 0) return;
+		StorageCtrl.storeDeck(activeDeck);
+		UICtrl.navigateMainSection();
+		DeckCtrl.clearData();
+		// UICtrl.clearInpVal(document.querySelector(DOM.csCardQuestionInp));
+		// UICtrl.clearInpVal(document.querySelector(DOM.csCardAnswerInp));
+		UICtrl.addDeckToSelectMenu(DOM.msPracticeSectionMenu, activeDeck);
+		UICtrl.addDeckToSelectMenu(DOM.msEditSectionMenu, activeDeck);
+		UICtrl.addDeckToSelectMenu(DOM.msDeleteDeckMenu, activeDeck);
+		UICtrl.addDeckToSelectMenu(DOM.msStatisticsSectionMenu, activeDeck);
+	}
+
+	const populateMenusWithLS = () => {
+		const DOM = UICtrl.getSelectors();
+		JSON.parse(localStorage.getItem('decks')) &&
+		JSON.parse(localStorage.getItem('decks')).forEach(deck => {
+			UICtrl.addDeckToSelectMenu(DOM.msPracticeSectionMenu, deck);
+			UICtrl.addDeckToSelectMenu(DOM.msEditSectionMenu, deck);
+			UICtrl.addDeckToSelectMenu(DOM.msDeleteDeckMenu, deck);
+			UICtrl.addDeckToSelectMenu(DOM.msStatisticsSectionMenu, deck);
 		});
-		UICtrl.displayCardInInputFields();
-		UICtrl.showAddCardBtn();
-		UICtrl.showEditCardBtn();
-		// Reset card question & answer text when chosen to not edit
-		if (DeckCtrl.logData().activeCard > 1) {
-			const lastCard = document.querySelector(UISelectors.CsCardSlider).children[DeckCtrl.logData().activeCard + 2];
-			lastCard.firstElementChild.children[0].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard].question;
-			lastCard.firstElementChild.children[1].firstElementChild.textContent = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[DeckCtrl.logData().activeCard].answer;
-		};
 	};
+
+	// TODO: Need proper refactoring 
+	const csCardSliderIndexInpNav = (e) => {		
+		const target = e.target;
+		if (!target.classList.contains('card-nav__index-input')) return;
+		let cardIndexVal = target.value;
+		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		const deckLength = activeDeck.cards.length;
+		target.value  
+			= cardIndexVal > deckLength + 1
+			? deckLength + 1
+			: cardIndexVal === '0'
+			? 1
+			: cardIndexVal;
+		cardIndexVal = target.value;
+		const activeCard = (deckLength + 1) - cardIndexVal;
+		DeckCtrl.logData().activeCard = activeCard;
+		// TODO: Fix ghost card
+		DeckCtrl.logData().activeCardID 
+			= cardIndexVal <= deckLength 
+			? activeDeck.cards[activeCard - 1].id
+			: 0;
+		UICtrl.csNavDeckByIndexInp(activeCard);
+		UICtrl.csShowDeckNav();
+		UICtrl.csShowAddCardBtn();
+		UICtrl.csShowEditCardBtn();
+		UICtrl.csDisplayCardInInputFields();
+		UICtrl.csResetPreviewCardText();
+	};
+
 
 	// Public methods
 	return {
 		init: function () {
 			loadEventListeners();
+			populateMenusWithLS();
 		},
 	};
+
 })(StorageCtrl, DeckCtrl, UICtrl);
 
 // Initialize App
