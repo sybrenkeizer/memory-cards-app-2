@@ -44,8 +44,7 @@ const DeckCtrl = (function () {
 		this.answer = answer;
 	}
 	const data = {
-		decks: [], // Take data from local storage
-		activeDeck: 0,
+		activeDeck: [],
 		activeCard: 0,
 		activeCardID: 0,
 	}
@@ -66,13 +65,14 @@ const DeckCtrl = (function () {
 		addDeck: (name) => {
 			let ID = DeckCtrl.createID();
 			newDeck = new Deck(ID, name);
-			data.decks.push(newDeck);
+			console.log(newDeck);
+			data.activeDeck = newDeck;
 			return newDeck;
 		},
 		addCard: (question, answer) => {
 			let ID = DeckCtrl.createID();
 			newCard = new Card(ID, question, answer);
-			data.decks[data.decks.length-1].cards.unshift(newCard);
+			data.activeDeck.cards.unshift(newCard);
 			return newCard;
 		},
 		deleteCard: (deck, id) => {
@@ -80,8 +80,7 @@ const DeckCtrl = (function () {
 			cards.forEach((card, index) => card.id === id && cards.splice(index, 1));
 		},
 		clearData: function() {
-			data.decks = [];
-			data.activeDeck = 0;
+			data.activeDeck = [];
 			data.activeCard = 0;
 			data.activeCardID = 0;
 		},
@@ -238,7 +237,7 @@ const UICtrl = (function () {
 		csShowDeckNav: () => {
 			const cardNavBtnRight = document.querySelector(UISelectors.csCardNavBtnRight);
 			const cardNavBtnLeft = document.querySelector(UISelectors.csCardNavBtnLeft);
-			const cards = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards;
+			const cards = DeckCtrl.logData().activeDeck.cards;
 			const activeCard = DeckCtrl.logData().activeCard;
 			cards.length > activeCard
 				? cardNavBtnRight.classList.add('show')
@@ -271,7 +270,7 @@ const UICtrl = (function () {
 			});
 		},
 		csDisplayCardInInputFields: () => {
-			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+			const activeDeck = DeckCtrl.logData().activeDeck;
 			const activeCard = DeckCtrl.logData().activeCard;
 			const questionInputEl = document.querySelector(UISelectors.csCardQuestionInp);
 			const answerInputEl = document.querySelector(UISelectors.csCardAnswerInp);
@@ -302,7 +301,7 @@ const UICtrl = (function () {
 		},
 		csResetPrevLastCardText: () => {
 			const activeCard = DeckCtrl.logData().activeCard;
-			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+			const activeDeck = DeckCtrl.logData().activeDeck;
 			const lastCard = document.querySelector(UISelectors.csCardSlider).children[activeCard];
 			const lastCardQuestion = lastCard.firstElementChild.children[0].firstElementChild;
 			const lastCardAnswer = lastCard.firstElementChild.children[1].firstElementChild;
@@ -315,7 +314,7 @@ const UICtrl = (function () {
 		},
 		csResetNextLastCardText: () => {
 			const activeCard = DeckCtrl.logData().activeCard;
-			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+			const activeDeck = DeckCtrl.logData().activeDeck;
 			const lastCard = document.querySelector(UISelectors.csCardSlider).children[activeCard + 2];
 			const lastCardQuestion = lastCard.firstElementChild.children[0].firstElementChild;
 			const lastCardAnswer = lastCard.firstElementChild.children[1].firstElementChild;
@@ -331,13 +330,12 @@ const UICtrl = (function () {
 		},
 		csSetCardIndexInpText: () => {
 			const cardSliderIndexInpEl = document.querySelector(UISelectors.csCardSliderIndexInp);
-			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards;
+			const activeDeck = DeckCtrl.logData().activeDeck;
 			const activeCard = DeckCtrl.logData().activeCard;
-			cardSliderIndexInpEl.value = activeDeck.length - activeCard + 1;
+			cardSliderIndexInpEl.value = activeDeck.cards.length - activeCard + 1;
 		},
 		csSetDeckLengthLabText: () => {
-			const activeDeck = DeckCtrl.logData().activeDeck;
-			const activeDeckLength = DeckCtrl.logData().decks[activeDeck].cards.length;
+			const activeDeckLength = DeckCtrl.logData().activeDeck.cards.length;
 			const csDeckLengthIndexLabEl = document.querySelector(UISelectors.csCardSliderIndexLab);
 			csDeckLengthIndexLabEl.textContent = activeDeckLength;
 		},
@@ -697,7 +695,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		const question = document.querySelector(UISelectors.csCardQuestionInp).value;
 		const answer = document.querySelector(UISelectors.csCardAnswerInp).value;
 		if (question === '' || answer === '') return;
-		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		const activeDeck = DeckCtrl.logData().activeDeck;
 		const activeInnerCardEl = Array.from(document.querySelector(UISelectors.csCardSlider).children)[1].firstElementChild;
 		DeckCtrl.addCard(question, answer);
 		UICtrl.csCreateCardUI();
@@ -730,7 +728,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 			UICtrl.csShowPrevCard();
 			UICtrl.csResetNextLastCardText();
 		};
-		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		const activeDeck = DeckCtrl.logData().activeDeck;
 		const activeCard = DeckCtrl.logData().activeCard;
 		let newCardID = activeCard > 0 ? activeDeck.cards[activeCard - 1].id : 0;
 		DeckCtrl.logData().activeCardID = newCardID;
@@ -769,7 +767,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		const newQuestion = document.querySelector(DOM.csCardQuestionInp).value;
 		const newAnswer = document.querySelector(DOM.csCardAnswerInp).value; 
 		const cardIndex = DeckCtrl.logData().activeCard - 1;
-		const currentCardData = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards[cardIndex];
+		const currentCardData = DeckCtrl.logData().activeDeck.cards[cardIndex];
 		currentCardData.question = newQuestion;
 		currentCardData.answer = newAnswer;
 	};
@@ -781,11 +779,10 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		if (!e.target.classList.contains('delete-card-btn')) return;
 		if (!card.classList.contains('active')) return;
 		const activeCard = DeckCtrl.logData().activeCard;
-		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		const activeDeck = DeckCtrl.logData().activeDeck;
 		const cardID = DeckCtrl.logData().activeCardID
 		DeckCtrl.deleteCard(activeDeck, cardID);
 		UICtrl.csDeleteCardFromSlider(e);
-	
 		let newCardID
 		if (activeCard > activeDeck.cards.length) {
 			DeckCtrl.logData().activeCard--;
@@ -804,7 +801,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 
 	const csStoreDeckSubmit = () => {
 		const DOM = UICtrl.getSelectors();
-		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		const activeDeck = DeckCtrl.logData().activeDeck;
 		if (!activeDeck.cards.length > 0) return;
 		StorageCtrl.storeDeck(activeDeck);
 		UICtrl.navigateMainSection();
@@ -822,7 +819,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		const target = e.target;
 		if (!target.classList.contains('card-nav__index-input')) return;
 		let cardIndexVal = target.value;
-		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+		const activeDeck = DeckCtrl.logData().activeDeck;
 		const deckLength = activeDeck.cards.length;
 		target.value  
 			= cardIndexVal > deckLength + 1
@@ -842,18 +839,16 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		UICtrl.csShowDeckNav();
 		UICtrl.csShowAddCardBtn();
 		UICtrl.csShowEditCardBtn();
-		
 		UICtrl.csDisplayCardInInputFields();
 		UICtrl.csResetPreviewCardText();
 	};
 
 	// Edit Section
 	const selectDeckToEdit = (e) => {
-		console.log(e.target.value);
-		const storedDecks = JSON.parse(localStorage.getItem('decks'));
-		const selectedDeck = storedDecks.filter(deck => deck.name === e.target.value);
+		// const storedDecks = JSON.parse(localStorage.getItem('decks'));
+		// const selectedDeck = storedDecks.filter(deck => deck.name === e.target.value);
 
-		console.log(selectedDeck);
+		// console.log(selectedDeck);
 	}
 
 	// Delete Section
