@@ -22,6 +22,12 @@ const StorageCtrl = (function () {
 				localStorage.setItem('decks', JSON.stringify(decks));
 			}
 		},
+		deleteDeck: (deck) => {
+			const deckId = deck.id;
+			const decks = localStorage.getItem('decks');
+			const currentDeckIndex = decks.findIndex(deck => deck.id === deckId);
+			console.log(currentDeckIndex);
+		}
 	}
 })();
 
@@ -31,9 +37,6 @@ const DeckCtrl = (function () {
 		this.id = id;
 		this.name = name;
 		this.cards = [];
-		this.addCard = function(card) {
-			this.cards.push(card.id, card.question, card.answer);
-		};
 	}
 	const Card = function(id, question, answer) {
 		this.id = id;
@@ -44,7 +47,7 @@ const DeckCtrl = (function () {
 		decks: [], // Take data from local storage
 		activeDeck: 0,
 		activeCard: 0,
-		activeCardID: 0
+		activeCardID: 0,
 	}
 
 	return {
@@ -124,6 +127,9 @@ const UICtrl = (function () {
 		csCardActiveBack: '#create-deck__cards-slider .card.active .card-answer-text',
 		csCardActiveDeleteBtn: '#create-deck__cards-slider .card.active .delete-card-btn',
 		csStoreDeckBtn: '#store-deck-btn',
+		esDeckNameSectionTitle: '#edit-deck-name',
+		esEditDeckNameInp: "#edit-deck__name-input",
+
 	};
 
 	return {
@@ -232,9 +238,9 @@ const UICtrl = (function () {
 		csShowDeckNav: () => {
 			const cardNavBtnRight = document.querySelector(UISelectors.csCardNavBtnRight);
 			const cardNavBtnLeft = document.querySelector(UISelectors.csCardNavBtnLeft);
-			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards;
+			const cards = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck].cards;
 			const activeCard = DeckCtrl.logData().activeCard;
-			activeDeck.length > activeCard
+			cards.length > activeCard
 				? cardNavBtnRight.classList.add('show')
 				: cardNavBtnRight.classList.remove('show');
 			activeCard > 0
@@ -300,7 +306,6 @@ const UICtrl = (function () {
 			const lastCard = document.querySelector(UISelectors.csCardSlider).children[activeCard];
 			const lastCardQuestion = lastCard.firstElementChild.children[0].firstElementChild;
 			const lastCardAnswer = lastCard.firstElementChild.children[1].firstElementChild;
-			//! Quick Fix: preview card should return cleared if card is not added.
 			lastCardQuestion.textContent = '';
 			lastCardAnswer.textContent = '';
 			if (activeCard - 1 > 0) {
@@ -363,7 +368,6 @@ const UICtrl = (function () {
 				`;
 				sliderEl.appendChild(card);
 			};
-
 			const nav = document.createElement('DIV');
 			nav.className ='card-nav';
 			nav.innerHTML = `
@@ -376,7 +380,6 @@ const UICtrl = (function () {
 			`;
 			sliderEl.appendChild(nav);
 		},
-
 		csNavDeckByIndexInp: (activeCard) => {
 			activeCard = Number(activeCard);
 			const cardsEls = Array.from(document.querySelector(UISelectors.csCardSlider).children);
@@ -393,7 +396,91 @@ const UICtrl = (function () {
 				index === 1 + activeCard && (child.className = 'card active');
 				index === 0 + activeCard && (child.className = 'card prev');
 			});
-		}
+		},
+		csSelectQuestionInp: () => {
+			document.querySelector(UISelectors.csCardQuestionInp).select();
+		},
+		csSelectAnswerInp: () => {
+			document.querySelector(UISelectors.csCardAnswerInp).select();
+		},
+
+		// Edit section methods
+		esPrintTitle: (deckName) => {
+			const titleEL = document.querySelector(UISelectors.esDeckNameSectionTitle);
+			titleEL.textContent = deckName;
+		},
+		esPrintDeckName: (deckName) => {
+			const deckNameInp = document.querySelector(UISelectors.esEditDeckNameInp);
+			deckNameInp.value = deckName;
+		},
+		esSetupDeckSliderUI: () => {
+			const sliderEl = document.querySelector(UISelectors.csCardSlider);
+			for (let i = 2; i > 0; i--) {
+				const card = document.createElement('DIV');
+				card.className = `card ${i === 2 ? 'prev' : 'active'}`;
+				card.innerHTML = `
+					<div class="card__inner">
+						<div class="card__inner--front">
+							<p class="card-text card-question-text"></p>
+							<button class="delete-card-btn">x</button>
+						</div>
+						<div class="card__inner--back">
+							<p class="card-text card-answer-text"></p>
+							<button class="delete-card-btn">x</button>
+						</div>
+					</div>
+				`;
+				sliderEl.appendChild(card);
+			};
+			const nav = document.createElement('DIV');
+			nav.className ='card-nav';
+			nav.innerHTML = `
+				<div class="card-nav__right">)</div>
+				<div class="card-nav__left">(</div>
+				<div class="card-nav__index">
+					<input type="number" id="card-nav__index-input" class="card-nav__index-input" value="1">
+					<label for="card-nav__index-input" id="card-nav__index-label" class="card-nav__index-label">0</label>
+				</div>
+			`;
+			sliderEl.appendChild(nav);
+		},
+		esCreateCardUI: () => {
+			const cardsSlider = document.querySelector(UISelectors.csCardSlider);
+			const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
+			console.log(DeckCtrl.logData().decks);
+			console.log(activeDeck);
+			// const numCards = activeDeck.cards.length;
+			// const div = document.createElement('DIV');
+			// div.className = 'card';
+			// div.innerHTML = `
+			// 	<div class="card__inner">
+			// 		<div class="card__inner--front">
+			// 			<p class="card-question-text">${newCard.question}</p>
+			// 			<button class="delete-card-btn">x</button>
+			// 		</div>
+			// 		<div class="card__inner--back">
+			// 			<p class="card-answer-text">${newCard.answer}</p>
+			// 			<button class="delete-card-btn">x</button>
+			// 		</div>
+			// 	</div>
+			// `;
+			// cardsSlider.prepend(div);
+		},
+
+
+
+
+		// Practice section methods
+
+
+
+
+		// Statistics section methods
+
+
+
+
+
 
 	}
 })();
@@ -403,6 +490,12 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	// EVENT LISTENERS	
 	const loadEventListeners = () => {
 		const DOM = UICtrl.getSelectors();
+		// General
+		document
+			.querySelectorAll(DOM.exitSectionBtn)
+			.forEach((btn) => btn.addEventListener("click", exitSectionSubmit));
+
+		// Main Section
 		document
 			.querySelector(DOM.msPracticeSectionBtn)
 			.addEventListener("click", msPracticeSectionSubmit);
@@ -430,12 +523,17 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		document
 			.querySelector(DOM.msStatisticsSectionBtn)
 			.addEventListener('click', msStatisticsSectionSubmit);
-		document
+			document
 			.querySelector(DOM.msStatisticsSectionMenu)
 			.addEventListener("keypress", msStatisticsSectionMenuKeyEnter);
 		document
-			.querySelectorAll(DOM.exitSectionBtn)
-			.forEach((btn) => btn.addEventListener("click", exitSectionSubmit));
+			.querySelector(DOM.msDeleteDeckBtn)
+			.addEventListener('click', dsDeleteDeck);
+		document
+			.querySelector(DOM.msEditSectionMenu)
+			.addEventListener('click', selectDeckToEdit);
+
+		// Create Section
 		document
 			.querySelector(DOM.csCreateDeckNameInp)
 			.addEventListener('input', csCreateDeckNameInp);
@@ -472,10 +570,29 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		document
 			.querySelector(DOM.csStoreDeckBtn)
 			.addEventListener('click', csStoreDeckSubmit);
+
+		// Edit Section
 	};
 
 	
 	// FUNCTIONS
+
+	// General
+	const exitSectionSubmit = () => {
+		UICtrl.navigateMainSection();
+	};	
+	const populateMenusWithLS = () => {
+		const DOM = UICtrl.getSelectors();
+		JSON.parse(localStorage.getItem('decks')) &&
+		JSON.parse(localStorage.getItem('decks')).forEach(deck => {
+			UICtrl.addDeckToSelectMenu(DOM.msPracticeSectionMenu, deck);
+			UICtrl.addDeckToSelectMenu(DOM.msEditSectionMenu, deck);
+			UICtrl.addDeckToSelectMenu(DOM.msDeleteDeckMenu, deck);
+			UICtrl.addDeckToSelectMenu(DOM.msStatisticsSectionMenu, deck);
+		});
+	};
+
+	// Main Section
 	const msPracticeSectionSubmit = (e) => {
 		e.preventDefault();
 		const msPracticeSectionInpVal = e.target.parentElement.firstElementChild.value;
@@ -492,14 +609,15 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	const msCreateSectionSubmit = (e) => {
 		e.preventDefault();
 		const UISelectors = UICtrl.getSelectors();
-		if (!document.querySelector(UISelectors.msCreateSectionInp).value) return;
+		const deckNameInputEl = document.querySelector(UISelectors.msCreateSectionInp);
+		if (!deckNameInputEl.value) return;
 		UICtrl.csClearDeckUI();
 		UICtrl.csSetupDeckSliderUI();
 		UICtrl.navigateCreateSection(e);
-		DeckCtrl.addDeck(document.querySelector(UISelectors.msCreateSectionInp).value);
-		UICtrl.csPrintTitle(document.querySelector(UISelectors.msCreateSectionInp).value);
-		UICtrl.csPrintDeckName(document.querySelector(UISelectors.msCreateSectionInp).value);
-		UICtrl.clearInpVal(document.querySelector(UISelectors.msCreateSectionInp));
+		DeckCtrl.addDeck(deckNameInputEl.value);
+		UICtrl.csPrintTitle(deckNameInputEl.value);
+		UICtrl.csPrintDeckName(deckNameInputEl.value);
+		UICtrl.clearInpVal(deckNameInputEl);
 	};
 	
 	const msCreateSectionMenuKeyEnter = (e) => {
@@ -517,9 +635,15 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 
 	const msEditSectionSubmit = (e) => {
 		e.preventDefault();
-		const msEditSectionInpVal = e.target.parentElement.firstElementChild.value;
-		if (!msEditSectionInpVal) return;
+		const deckNameInputEl = e.target.parentElement.firstElementChild;
+		if (!deckNameInputEl.value) return;
+		
+		UICtrl.esSetupDeckSliderUI();
+		UICtrl.esCreateCardUI();
 		UICtrl.navigateEditSection(e);
+		UICtrl.esPrintTitle(deckNameInputEl.value);
+		UICtrl.esPrintDeckName(deckNameInputEl.value);
+		UICtrl.clearInpVal(deckNameInputEl);
 	};
 
 	const msEditSectionMenuKeyEnter = (e) => {
@@ -551,10 +675,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		UICtrl.navigateStatisticsSection(e);
 	};
 
-	const exitSectionSubmit = () => {
-		UICtrl.navigateMainSection();
-	};		
-
+	// Create Section
 	const csCreateDeckNameInp = () => {
 		const UISelectors = UICtrl.getSelectors();
 		const deckNameInp = document.querySelector(UISelectors.csCreateDeckNameInp).value;
@@ -591,16 +712,21 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		UICtrl.csSetCardIndexInpText();
 		UICtrl.csSetDeckLengthLabText();
 	};
-
+	
 	const csDeckNavBtn = (e) => {	
 		if (!(e.target.classList.contains('card-nav__right') || e.target.classList.contains('card-nav__left'))) return;
+		const UISelectors = UICtrl.getSelectors();
+		const card = DeckCtrl.logData().activeCard;
+		const activeInnerCardEl = Array.from(document.querySelector(UISelectors.csCardSlider).children)[card + 1].firstElementChild;
 		if (e.target.classList.contains('card-nav__right')) {
 			DeckCtrl.logData().activeCard++;
+			UICtrl.flipCardFront(activeInnerCardEl);
 			UICtrl.csShowNextCard();
 			UICtrl.csResetPrevLastCardText();
 		};
 		if (e.target.classList.contains('card-nav__left')) {
 			DeckCtrl.logData().activeCard--;
+			UICtrl.flipCardFront(activeInnerCardEl);
 			UICtrl.csShowPrevCard();
 			UICtrl.csResetNextLastCardText();
 		};
@@ -630,8 +756,10 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		if (!target.parentElement.parentElement.classList.contains('active')) return;
 		if (target.classList.contains('card__inner--front')) {
 			UICtrl.flipCardBack(target.parentElement);
+			UICtrl.csSelectAnswerInp();
 		} else if (target.classList.contains('card__inner--back')) {
 			UICtrl.flipCardFront(target.parentElement);
+			UICtrl.csSelectQuestionInp();
 		};
 	};
 	
@@ -646,7 +774,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		currentCardData.answer = newAnswer;
 	};
 
-	// TODO : Need proper refactoring 
+	// TODO: Need proper refactoring 
 	const csDeleteCardBtn = (e) => {
 		e.preventDefault();
 		const card = e.target.parentElement.parentElement.parentElement;
@@ -677,28 +805,16 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	const csStoreDeckSubmit = () => {
 		const DOM = UICtrl.getSelectors();
 		const activeDeck = DeckCtrl.logData().decks[DeckCtrl.logData().activeDeck];
-		console.log(activeDeck);
 		if (!activeDeck.cards.length > 0) return;
 		StorageCtrl.storeDeck(activeDeck);
 		UICtrl.navigateMainSection();
 		DeckCtrl.clearData();
-		// UICtrl.clearInpVal(document.querySelector(DOM.csCardQuestionInp));
-		// UICtrl.clearInpVal(document.querySelector(DOM.csCardAnswerInp));
+		UICtrl.clearInpVal(document.querySelector(DOM.csCardQuestionInp));
+		UICtrl.clearInpVal(document.querySelector(DOM.csCardAnswerInp));
 		UICtrl.addDeckToSelectMenu(DOM.msPracticeSectionMenu, activeDeck);
 		UICtrl.addDeckToSelectMenu(DOM.msEditSectionMenu, activeDeck);
 		UICtrl.addDeckToSelectMenu(DOM.msDeleteDeckMenu, activeDeck);
 		UICtrl.addDeckToSelectMenu(DOM.msStatisticsSectionMenu, activeDeck);
-	}
-
-	const populateMenusWithLS = () => {
-		const DOM = UICtrl.getSelectors();
-		JSON.parse(localStorage.getItem('decks')) &&
-		JSON.parse(localStorage.getItem('decks')).forEach(deck => {
-			UICtrl.addDeckToSelectMenu(DOM.msPracticeSectionMenu, deck);
-			UICtrl.addDeckToSelectMenu(DOM.msEditSectionMenu, deck);
-			UICtrl.addDeckToSelectMenu(DOM.msDeleteDeckMenu, deck);
-			UICtrl.addDeckToSelectMenu(DOM.msStatisticsSectionMenu, deck);
-		});
 	};
 
 	// TODO: Need proper refactoring 
@@ -726,9 +842,24 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		UICtrl.csShowDeckNav();
 		UICtrl.csShowAddCardBtn();
 		UICtrl.csShowEditCardBtn();
+		
 		UICtrl.csDisplayCardInInputFields();
 		UICtrl.csResetPreviewCardText();
 	};
+
+	// Edit Section
+	const selectDeckToEdit = (e) => {
+		console.log(e.target.value);
+		const storedDecks = JSON.parse(localStorage.getItem('decks'));
+		const selectedDeck = storedDecks.filter(deck => deck.name === e.target.value);
+
+		console.log(selectedDeck);
+	}
+
+	// Delete Section
+	const dsDeleteDeck = (e) => {
+		// StorageCtrl.deleteDeck();
+	}
 
 
 	// Public methods
@@ -743,3 +874,4 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 
 // Initialize App
 AppCtrl.init();
+

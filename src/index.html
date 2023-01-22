@@ -126,7 +126,7 @@
           </header>
           <form class="section__form">
             <div class="form-control">
-              <input type="text" id="edit-deck__name" autocomplete="off">
+              <input type="text" id="edit-deck__name-input" autocomplete="off">
               <label>Deck Name</label>
             </div>
             <div class="form-control">
@@ -141,23 +141,40 @@
             <button id="add-card-btn">Edit Card</button>
             </div>
           </form>
-          <ul id="edit-deck-cards-list" class="section__list">
-            <li>
-              <span>#</span>
-              <span>Question</span>
-              <span>Answer</span>
-            </li>
-            <li>
-              <span>1</span>
-              <span>Lorem ipsum dolor sit?</span>
-              <span>Lorem, ipsum</span>
-            </li>
-            <li>
-              <span>2</span>
-              <span>Dolor sit?</span>
-              <span>Lorem ipsum dolor sit amet consectetur</span>
-            </li>
-          </ul>
+          <div id="edit-deck__cards-slider" class="section__cards-slider">
+            <div class="card prev">
+              <div class="card__inner">
+                <div class="card__inner--front">
+                  <p class="card-text card-question-text"></p>
+						      <button class="delete-card-btn">x</button>
+                </div>
+                <div class="card__inner--back">
+                  <p class="card-text card-answer-text"></p>
+						      <button class="delete-card-btn">x</button>
+                </div>
+              </div>
+            </div>
+            <div class="card active">
+              <div class="card__inner">
+                <div class="card__inner--front">
+                  <p class="card-text card-question-text"></p>
+						      <button class="delete-card-btn">x</button>
+                </div>
+                <div class="card__inner--back">
+                  <p class="card-text card-answer-text"></p>
+                  <button class="delete-card-btn">x</button>
+                </div>
+              </div>
+            </div>
+            <div class="card-nav">
+              <div class="card-nav__right">)</div>
+              <div class="card-nav__left">(</div>
+              <div class="card-nav__index">
+                <input type="number" id="card-nav__index-input" class="card-nav__index-input" value="1">
+                <label for="card-nav__index-input" id="card-nav__index-label" class="card-nav__index-label">0</label>
+              </div>
+            </div>
+          </div>
           <div class="form-control">
             <button id="save-changes-btn">Save Changes</button>
           </div>

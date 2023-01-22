@@ -94,7 +94,7 @@ h2 {
 }
 .cube__side {
   position: absolute;
-  opacity: 0.9;
+  opacity: 0.97;
 }
 .cube__side--main {
   transform: rotate(0) translate3d(0, 0, 17.5rem);
