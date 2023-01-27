@@ -94,7 +94,7 @@ h2 {
 }
 .cube__side {
   position: absolute;
-  opacity: 0.97;
+  opacity: 0.95;
 }
 .cube__side--main {
   transform: rotate(0) translate3d(0, 0, 17.5rem);
@@ -316,6 +316,12 @@ h2 {
 }
 .section__cards-slider .card__inner--back {
   transform: rotateX(180deg);
+}
+.section__cards-slider .card-question-text {
+  pointer-events: none;
+}
+.section__cards-slider .card-answer-text {
+  pointer-events: none;
 }
 .section__cards-slider .card.active:not(:nth-child(2)) .card__inner:hover .delete-card-btn {
   opacity: 1;
