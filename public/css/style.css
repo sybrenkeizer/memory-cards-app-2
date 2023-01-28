@@ -135,12 +135,28 @@ h2 {
   position: absolute;
   top: 0;
   left: 0;
-  transform: rotate(180deg);
-  font-size: 1.4em;
-  transition: color 0.3s ease;
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.6;
 }
-.section__exit-btn:hover {
-  color: hsl(36deg, 94%, 52%);
+.section__exit-btn--icon {
+  transition: opacity 0.3s ease-in-out;
+  line-height: 1.2;
+  transform: rotate(180deg);
+}
+.section__exit-btn--text {
+  position: absolute;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+.section__exit-btn:hover .section__exit-btn--text {
+  opacity: 1;
+  transform: translateX(-50%);
+  line-height: 1.5;
+}
+.section__exit-btn:hover .section__exit-btn--icon {
+  opacity: 0;
 }
 .section__form {
   height: 100%;

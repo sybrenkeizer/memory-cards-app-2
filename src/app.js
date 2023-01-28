@@ -836,8 +836,20 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	// FUNCTIONS
 
 	// General
-	const exitSectionSubmit = () => {
+	const exitSectionSubmit = (e) => {
+		const DOM = UICtrl.getSelectors();
+		const cubeSide = e.target.parentElement.parentElement.parentElement;
 		UICtrl.navigateMainSection();
+		DeckCtrl.clearData();
+		if (cubeSide.classList.contains('cube__side--create')) {
+			UICtrl.clearInpVal(document.querySelector(DOM.csCardQuestionInp));
+			UICtrl.clearInpVal(document.querySelector(DOM.csCardAnswerInp));
+		}
+		if (cubeSide.classList.contains('cube__side--edit')) {
+			UICtrl.clearInpVal(document.querySelector(DOM.esCardQuestionInp));
+			UICtrl.clearInpVal(document.querySelector(DOM.esCardAnswerInp));
+		}
+
 	};	
 	const populateMenusWithLS = () => {
 		const DOM = UICtrl.getSelectors();
