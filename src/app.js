@@ -956,8 +956,15 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	}
 
 	const msDeleteDeckMenuKeyEnter = (e) => {
-		const msDeleteDeckInpVal = e.target.value;
-		if (!msDeleteDeckInpVal || !e.key === 'Enter') return;
+		const DOM = UICtrl.getSelectors();
+		const msDeleteSectionInp = e.target.parentElement.firstElementChild;
+		if (!msDeleteSectionInp.value || !e.key === 'Enter') return;
+		StorageCtrl.deleteDeck(msDeleteSectionInp.value);
+		UICtrl.addDeckToSelectMenu(DOM.msPracticeSectionMenu);
+		UICtrl.addDeckToSelectMenu(DOM.msEditSectionMenu);
+		UICtrl.addDeckToSelectMenu(DOM.msDeleteDeckMenu);
+		UICtrl.addDeckToSelectMenu(DOM.msStatisticsSectionMenu);
+		UICtrl.clearInpVal(msDeleteSectionInp);
 	};
 
 	const msStatisticsSectionSubmit = (e) => {
