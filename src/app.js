@@ -850,7 +850,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 			UICtrl.clearInpVal(document.querySelector(DOM.esCardAnswerInp));
 		}
 
-	};	
+	};
 	const populateMenusWithLS = () => {
 		const DOM = UICtrl.getSelectors();
 		JSON.parse(localStorage.getItem('decks')) &&
@@ -971,7 +971,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		const UISelectors = UICtrl.getSelectors();
 		const deckNameInp = document.querySelector(UISelectors.csCreateDeckNameInp).value;
 		UICtrl.csUpdateSectionTitle(deckNameInp);
-		DeckCtrl.logData().activeDeck.deckName = deckNameInp;
+		DeckCtrl.logData().activeDeck.name = deckNameInp;
 	};
 
 	const csCardQuestionInp = () => {
