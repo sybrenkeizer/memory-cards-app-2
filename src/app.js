@@ -1,8 +1,9 @@
 //! BUGS
-// - section navigation on keypress enter not working 
+// - Select dropdown menu section navigation on enter remains focussed
 
 //! ANOMALY
 // - First card in card slider (class = prev) takes on unintended the value of active card
+// - Exit section button hover has glitches other form elements
 
 // TODO : Add methods to deck controller to deal with data updates
 // TODO : Trim UI selectors
@@ -925,10 +926,21 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	};
 
 	const msEditSectionMenuKeyEnter = (e) => {
-		const msEditSectionInpVal = e.target.value;
-		if (!msEditSectionInpVal || !e.key === 'Enter') return;
+		const deckNameInputEl = e.target.parentElement.firstElementChild;
+		const activeDeck = DeckCtrl.logData().activeDeck;
+		if (!deckNameInputEl.value || !e.key === 'Enter') return;
+		UICtrl.esClearDeckUI();
+		UICtrl.esSetupDeckSliderUI();
+		UICtrl.esPopulateCardSlider();
+		UICtrl.esSortCardsUI(activeDeck);
 		UICtrl.navigateEditSection(e);
-	};
+		UICtrl.esPrintTitle(deckNameInputEl.value);
+		UICtrl.esPrintDeckName(deckNameInputEl.value);
+		UICtrl.clearInpVal(deckNameInputEl);
+		UICtrl.esShowDeckNav();
+		UICtrl.esSetDeckLengthLabText();
+		UICtrl.esSetCardIndexInpText(); // TODO: Evaluate position state	};
+	}
 
 	const msDeleteDeckSubmit = (e) => {
 		e.preventDefault();
