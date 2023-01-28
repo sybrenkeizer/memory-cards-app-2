@@ -108,6 +108,7 @@ const UICtrl = (function () {
 		practiceSection: ".cube__side--practice",
 		statisticsSection: ".cube__side--statistics",
 		exitSectionBtn: ".section__exit-btn",
+		msInputFields: "#form__main-menu .form-control > *:first-child",
 		msPracticeSectionBtn: "#practice-deck__btn",
 		msPracticeSectionMenu: '#practice-deck__menu',
 		msCreateSectionBtn: "#create-deck__btn",
@@ -741,12 +742,16 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		document
 			.querySelector(DOM.msStatisticsSectionBtn)
 			.addEventListener('click', msStatisticsSectionSubmit);
-			document
+		document
 			.querySelector(DOM.msStatisticsSectionMenu)
 			.addEventListener("keypress", msStatisticsSectionMenuKeyEnter);
 		document
 			.querySelector(DOM.msEditSectionMenu)
 			.addEventListener('click', selectDeckToEdit);
+		document
+			.querySelectorAll(DOM.msInputFields)
+			.forEach(field => field
+			.addEventListener('focus', msResetInputFields));
 
 		// Create Section
 		document
@@ -823,7 +828,6 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		document
 			.querySelector(DOM.esSaveChangesBtn)
 			.addEventListener('click', esSaveChangesSubmit);
-
 	};
 
 
@@ -864,7 +868,10 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		e.preventDefault();
 		const UISelectors = UICtrl.getSelectors();
 		const deckNameInputEl = document.querySelector(UISelectors.msCreateSectionInp);
-		if (!deckNameInputEl.value) return;
+		if (!deckNameInputEl.value) {
+			e.target.parentElement.firstElementChild.focus();
+			return;
+		};
 		UICtrl.csClearDeckUI();
 		UICtrl.csSetupDeckSliderUI();
 		UICtrl.navigateCreateSection(e);
@@ -940,6 +947,12 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		if (!msStatisticsSectionInpVal || !e.key === 'Enter') return;
 		UICtrl.navigateStatisticsSection(e);
 	};
+
+	const msResetInputFields = (e) => {
+		const DOM = UICtrl.getSelectors();
+		const inputFields = document.querySelectorAll(DOM.msInputFields);
+		inputFields.forEach(field => UICtrl.clearInpVal(field));
+	}
 
 	// Create Section
 	const csCreateDeckNameInp = () => {
