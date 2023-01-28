@@ -31,11 +31,11 @@ const StorageCtrl = (function () {
 			decks.splice(deckIndex, 1, newDeck)
 			localStorage.setItem('decks', JSON.stringify(decks));
 		},
-		deleteDeck: (deck) => {
-			const deckId = deck.id;
-			const decks = localStorage.getItem('decks');
-			const currentDeckIndex = decks.findIndex(deck => deck.id === deckId);
-			console.log(currentDeckIndex);
+		deleteDeck: (deckName) => {
+			const decks = JSON.parse(localStorage.getItem('decks'));
+			const removeIndex = decks.findIndex(deck => deck.name === deckName);
+			decks.splice(removeIndex, 1);
+			localStorage.setItem('decks', JSON.stringify(decks));
 		}
 	}
 })();
@@ -192,6 +192,9 @@ const UICtrl = (function () {
 				option.textContent = deck.name;
 				menuEL.appendChild(option);
 			});
+		},
+		resetSelectMenu: (menu) => {
+			menu.selectedIndex = 0;
 		},
 
 		// Create Section methods
@@ -685,6 +688,7 @@ const UICtrl = (function () {
 		},
 
 
+
 		// Practice section methods
 
 
@@ -740,9 +744,6 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 			document
 			.querySelector(DOM.msStatisticsSectionMenu)
 			.addEventListener("keypress", msStatisticsSectionMenuKeyEnter);
-		document
-			.querySelector(DOM.msDeleteDeckBtn)
-			.addEventListener('click', dsDeleteDeck);
 		document
 			.querySelector(DOM.msEditSectionMenu)
 			.addEventListener('click', selectDeckToEdit);
@@ -825,6 +826,8 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 
 	};
 
+
+
 	
 	// FUNCTIONS
 
@@ -897,10 +900,8 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		UICtrl.esPrintTitle(deckNameInputEl.value);
 		UICtrl.esPrintDeckName(deckNameInputEl.value);
 		UICtrl.clearInpVal(deckNameInputEl);
-		// UICtrl.flipCardFront(activeInnerCardEl);
 		UICtrl.esShowDeckNav();
 		UICtrl.esSetDeckLengthLabText();
-
 		UICtrl.esSetCardIndexInpText(); // TODO: Evaluate position state
 	};
 
@@ -912,8 +913,15 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 
 	const msDeleteDeckSubmit = (e) => {
 		e.preventDefault();
-		const msDeleteSectionInpVal = e.target.parentElement.firstElementChild.value;
-		if (!msDeleteSectionInpVal) return;
+		const DOM = UICtrl.getSelectors();
+		const msDeleteSectionInp = e.target.parentElement.firstElementChild;
+		if (!msDeleteSectionInp) return;
+		StorageCtrl.deleteDeck(msDeleteSectionInp.value);
+		UICtrl.addDeckToSelectMenu(DOM.msPracticeSectionMenu);
+		UICtrl.addDeckToSelectMenu(DOM.msEditSectionMenu);
+		UICtrl.addDeckToSelectMenu(DOM.msDeleteDeckMenu);
+		UICtrl.addDeckToSelectMenu(DOM.msStatisticsSectionMenu);
+		UICtrl.clearInpVal(msDeleteSectionInp);
 	}
 
 	const msDeleteDeckMenuKeyEnter = (e) => {
