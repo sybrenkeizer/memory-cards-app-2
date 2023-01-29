@@ -152,6 +152,17 @@ const UICtrl = (function () {
 		esCardActiveInner: '#edit-deck__cards-slider .card.active .card__inner',
 		esCreateDeckNameInp: "#edit-deck__name-input",
 		esSaveChangesBtn: '#save-changes-btn',
+		psDeckNameSectionTitle: '#practice-deck-name',
+		psProgressCounterCurrent:'.progress__counter-current',
+		psProgressCounterTotal:'.progress__counter-total',
+		psProgressBar: '.progress__bar-inner',
+		psCardSlider: '#practice-deck__cards-slider',
+		psEvalCardContainer: '.card-evaluation',
+		psEvalCardEasyBtn: '#card-evaluation--easy',
+		psEvalCardOkBtn: '#card-evaluation--ok',
+		psEvalCardHardBtn: '#card-evaluation--hard',
+		psFinishPracticeContainer: '.finish-deck',
+		psFinishPracticeBtn: '#finish-practice-btn'
 	};
 	
 	return {
@@ -496,7 +507,6 @@ const UICtrl = (function () {
 						</div>
 					</div>
 				`;
-				// cardsSlider.prepend(div);	
 				cardsSlider.insertBefore(div, cardsSlider.lastElementChild);
 			}
 		},
@@ -689,9 +699,87 @@ const UICtrl = (function () {
 			prevCardAnswer.textContent = '';
 		},
 
-
-
 		// Practice section methods
+		psPrintTitle: (deckName) => {
+			const titleEL = document.querySelector(UISelectors.psDeckNameSectionTitle);
+			titleEL.textContent = deckName;
+		},
+		psSetCounterCurrent: () => {
+			const activeCard = DeckCtrl.logData().activeCard;
+			const counterCurrent = document.querySelector(UISelectors.psProgressCounterCurrent);
+			counterCurrent.textContent = activeCard + 1;
+		},
+		psSetCounterTotal: () => {
+			const activeDeck = DeckCtrl.logData().activeDeck;
+			const counterTotal = document.querySelector(UISelectors.psProgressCounterTotal);
+			counterTotal.textContent = activeDeck.cards.length;
+		},
+		psSetProgressBar: () => {
+			const progressBar = document.querySelector(UISelectors.psProgressBar);
+			const totalCards = DeckCtrl.logData().activeDeck ? DeckCtrl.logData().activeDeck.cards.length : 0;
+			const currentCard = DeckCtrl.logData().activeCard;
+			progressBar.style.width = currentCard / (totalCards - 1) * 100 + '%';
+		},
+		psPopulateCardSlider: () => {
+			const cardsSlider = document.querySelector(UISelectors.psCardSlider);
+			const activeDeck = DeckCtrl.logData().activeDeck;
+			const cardsToPrint = activeDeck.cards.length;
+			for (i = 0; i < cardsToPrint; i++) {
+				const div = document.createElement('DIV');
+				div.className = 'card';
+				div.innerHTML = `
+					<div class="card__inner">
+						<div class="card__inner--front">
+							<p class="card-question-text">${activeDeck.cards[i].question}</p>
+						</div>
+						<div class="card__inner--back">
+							<p class="card-answer-text">${activeDeck.cards[i].answer}</p>
+						</div>
+					</div>
+				`;
+				cardsSlider.prepend(div);
+			}
+		},
+		psSortCardsUI: (deck) => {
+			const deckLength = deck.cards.length;
+			const cards = document.querySelector(UISelectors.psCardSlider).children;
+			deckLength > 0 && (cards[0].className = 'card card--active');
+			deckLength > 0 && (cards[1].className = 'card card--next');
+		},
+		psShowNextCard: () => {
+			const cardsEls = Array.from(document.querySelector(UISelectors.psCardSlider).children);
+			const activeCard = DeckCtrl.logData().activeCard;
+			cardsEls.forEach((child, index) => {
+				index <=0 + activeCard && (child.className = 'card');
+				index === 0 + activeCard && (child.className = 'card card--prev');
+				index === 1 + activeCard && (child.className = 'card card--active');
+				index === 2 + activeCard && (child.className = 'card card--next');
+			});
+		},
+		psShowCardEvaluation: () => {
+			const cardEvalContainer = document.querySelector(UISelectors.psEvalCardContainer);
+			cardEvalContainer.style.display = 'flex';
+		},
+		psHideCardEvaluation: () => {
+			const cardEvalContainer = document.querySelector(UISelectors.psEvalCardContainer);
+			cardEvalContainer.style.display = 'none';
+		},
+		psShowFinishPracticeBtn: () => {
+			const finishPracticeBtn = document.querySelector(UISelectors.psFinishPracticeContainer);
+			finishPracticeBtn.style.display = 'block';
+		},
+		psHideFinishPracticeBtn: () => {
+			const finishPracticeBtn = document.querySelector(UISelectors.psFinishPracticeContainer);
+			finishPracticeBtn.style.display = 'none';
+		},
+		psClearDeckUI: () => {
+			const sliderEl = document.querySelector(UISelectors.psCardSlider);
+			Array.from(sliderEl.children).forEach(card => card.remove());
+		},
+
+
+
+
 
 
 
@@ -829,8 +917,27 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		document
 			.querySelector(DOM.esSaveChangesBtn)
 			.addEventListener('click', esSaveChangesSubmit);
+			
+			// Practice Section
+		document
+			.querySelector(DOM.msPracticeSectionMenu)
+			.addEventListener('click', selectDeckToPractice);
+		document
+			.querySelector(DOM.psEvalCardEasyBtn)
+			.addEventListener('click', psEvalCardEasySubmit);
+		document
+			.querySelector(DOM.psEvalCardOkBtn)
+			.addEventListener('click', psEvalCardOkSubmit);
+		document
+			.querySelector(DOM.psEvalCardHardBtn)
+			.addEventListener('click', psEvalCardHardSubmit);
+		document
+			.querySelector(DOM.psCardSlider)
+			.addEventListener('click', psCardClick);
+		document
+			.querySelector(DOM.psFinishPracticeBtn)
+			.addEventListener('click', psFinishPracticeSubmit)
 	};
-
 
 
 	
@@ -850,7 +957,9 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 			UICtrl.clearInpVal(document.querySelector(DOM.esCardQuestionInp));
 			UICtrl.clearInpVal(document.querySelector(DOM.esCardAnswerInp));
 		}
-
+		if (cubeSide.classList.contains('cube__side--practice')) {
+			UICtrl.psSetProgressBar();
+		}
 	};
 	const populateMenusWithLS = () => {
 		const DOM = UICtrl.getSelectors();
@@ -866,21 +975,31 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	// Main Section
 	const msPracticeSectionSubmit = (e) => {
 		e.preventDefault();
-		const msPracticeSectionInpVal = e.target.parentElement.firstElementChild.value;
-		if (!msPracticeSectionInpVal) return
+		const deckNameInputEl = e.target.parentElement.firstElementChild;
+		const activeDeck = DeckCtrl.logData().activeDeck;
+		if (!deckNameInputEl.value) return
+		UICtrl.psClearDeckUI();
+		UICtrl.psHideFinishPracticeBtn();
+		UICtrl.psShowCardEvaluation();
 		UICtrl.navigatePracticeSection(e);
+		UICtrl.psPrintTitle(deckNameInputEl.value);
+		UICtrl.psSetCounterCurrent();
+		UICtrl.psSetCounterTotal();
+		UICtrl.psSetProgressBar();
+		UICtrl.psPopulateCardSlider();
+		UICtrl.psSortCardsUI(activeDeck);
+		UICtrl.clearInpVal(deckNameInputEl);
 	};
 	
 	const msPracticeSectionMenuKeyEnter = (e) => {
-		const msPracticeSectionInpVal = e.target.value;
-		if (!msPracticeSectionInpVal || e.key !== 'Enter') return;
+		const deckNameInputEl = e.target;
+		if (!deckNameInputEl.value || e.key !== 'Enter') return;
 		UICtrl.navigatePracticeSection(e);
 	};
 
 	const msCreateSectionSubmit = (e) => {
 		e.preventDefault();
-		const UISelectors = UICtrl.getSelectors();
-		const deckNameInputEl = document.querySelector(UISelectors.msCreateSectionInp);
+		const deckNameInputEl = e.target.parentElement.firstElementChild
 		if (!deckNameInputEl.value) {
 			e.target.parentElement.firstElementChild.focus();
 			return;
@@ -895,15 +1014,14 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	};
 	
 	const msCreateSectionMenuKeyEnter = (e) => {
-		const UISelectors = UICtrl.getSelectors();
-		const msCreateSectionInpVal = e.target.value;
-		if (!msCreateSectionInpVal || e.key !== 'Enter') return;
+		const deckNameInputEl = e.target;
+		if (!deckNameInputEl.value || e.key !== 'Enter') return;
 		UICtrl.csClearDeckUI();
 		UICtrl.csSetupDeckSliderUI();
 		UICtrl.navigateCreateSection(e);
-		DeckCtrl.addDeck(msCreateSectionInpVal);
-		UICtrl.csPrintTitle(msCreateSectionInpVal);
-		UICtrl.csPrintDeckName(msCreateSectionInpVal);
+		DeckCtrl.addDeck(deckNameInputEl.value);
+		UICtrl.csPrintTitle(deckNameInputEl.value);
+		UICtrl.csPrintDeckName(deckNameInputEl.value);
 		UICtrl.clearInpVal(e.target);
 	};
 
@@ -920,6 +1038,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		UICtrl.esPrintTitle(deckNameInputEl.value);
 		UICtrl.esPrintDeckName(deckNameInputEl.value);
 		UICtrl.clearInpVal(deckNameInputEl);
+		UICtrl.esShowAddCardBtn();
 		UICtrl.esShowDeckNav();
 		UICtrl.esSetDeckLengthLabText();
 		UICtrl.esSetCardIndexInpText(); // TODO: Evaluate position state
@@ -945,14 +1064,14 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	const msDeleteDeckSubmit = (e) => {
 		e.preventDefault();
 		const DOM = UICtrl.getSelectors();
-		const msDeleteSectionInp = e.target.parentElement.firstElementChild;
-		if (!msDeleteSectionInp) return;
-		StorageCtrl.deleteDeck(msDeleteSectionInp.value);
+		const deckNameInputEl = e.target.parentElement.firstElementChild;
+		if (!deckNameInputEl) return;
+		StorageCtrl.deleteDeck(deckNameInputEl.value);
 		UICtrl.addDeckToSelectMenu(DOM.msPracticeSectionMenu);
 		UICtrl.addDeckToSelectMenu(DOM.msEditSectionMenu);
 		UICtrl.addDeckToSelectMenu(DOM.msDeleteDeckMenu);
 		UICtrl.addDeckToSelectMenu(DOM.msStatisticsSectionMenu);
-		UICtrl.clearInpVal(msDeleteSectionInp);
+		UICtrl.clearInpVal(deckNameInputEl);
 	}
 
 	const msDeleteDeckMenuKeyEnter = (e) => {
@@ -969,13 +1088,13 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 
 	const msStatisticsSectionSubmit = (e) => {
 		e.preventDefault();
-		const msStatisticsSectionInpVal = e.target.parentElement.firstElementChild.value;
-		if (!msStatisticsSectionInpVal) return;
+		const deckNameInputEl = e.target.parentElement.firstElementChild;
+		if (!deckNameInputEl.value) return;
 	};
 
 	const msStatisticsSectionMenuKeyEnter = (e) => {
-		const msStatisticsSectionInpVal = e.target.value;
-		if (!msStatisticsSectionInpVal || !e.key === 'Enter') return;
+		const deckNameInputEl = e.target;
+		if (!deckNameInputEl.value || !e.key === 'Enter') return;
 		UICtrl.navigateStatisticsSection(e);
 	};
 
@@ -1326,6 +1445,68 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	const dsDeleteDeck = (e) => {
 		// StorageCtrl.deleteDeck();
 	}
+
+
+	// Practice Section
+	const selectDeckToPractice = (e) => {
+		const storedDecks = JSON.parse(localStorage.getItem('decks'));
+		const selectedDeck = storedDecks.filter(deck => deck.name === e.target.value)[0];
+		DeckCtrl.logData().activeDeck = selectedDeck;
+		DeckCtrl.logData().activeCard = 0;
+	};
+	const psEvalCardEasySubmit = (e) => {
+		const activeCard = DeckCtrl.logData().activeCard;
+		const activeDeck = DeckCtrl.logData().activeDeck;
+		UICtrl.psShowNextCard();
+		DeckCtrl.logData().activeCard++;
+		UICtrl.psSetCounterCurrent();
+		UICtrl.psSetCounterTotal();
+		UICtrl.psSetProgressBar();
+		if (activeCard + 2 === activeDeck.cards.length) {
+			UICtrl.psHideCardEvaluation();
+			UICtrl.psShowFinishPracticeBtn();
+		};
+	};
+	const psEvalCardOkSubmit = (e) => {
+		const activeCard = DeckCtrl.logData().activeCard;
+		const activeDeck = DeckCtrl.logData().activeDeck;
+		UICtrl.psShowNextCard();
+		DeckCtrl.logData().activeCard++;
+		UICtrl.psSetCounterCurrent();
+		UICtrl.psSetCounterTotal();
+		UICtrl.psSetProgressBar();
+		if (activeCard + 2 === activeDeck.cards.length) {
+			UICtrl.psHideCardEvaluation();
+			UICtrl.psShowFinishPracticeBtn();
+		};
+	};
+	const psEvalCardHardSubmit = (e) => {
+		const activeCard = DeckCtrl.logData().activeCard;
+		const activeDeck = DeckCtrl.logData().activeDeck;
+		UICtrl.psShowNextCard();
+		DeckCtrl.logData().activeCard++;
+		UICtrl.psSetCounterCurrent();
+		UICtrl.psSetCounterTotal();
+		UICtrl.psSetProgressBar();
+		if (activeCard + 2 === activeDeck.cards.length) {
+			UICtrl.psHideCardEvaluation();
+			UICtrl.psShowFinishPracticeBtn();
+		};
+	};
+	const psCardClick = (e) => {
+		const target = e.target;
+		if (!target.parentElement.parentElement.classList.contains('card--active')) return;
+		if (target.classList.contains('card__inner--front')) {
+			UICtrl.flipCardBack(target.parentElement);
+		} else if (target.classList.contains('card__inner--back')) {
+			UICtrl.flipCardFront(target.parentElement);
+		};
+	};
+	const psFinishPracticeSubmit = () => {
+		UICtrl.navigateMainSection();
+		DeckCtrl.clearData();
+		UICtrl.psSetProgressBar();
+	};
 
 
 	// Public methods

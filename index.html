@@ -119,16 +119,29 @@
         <!-- TOP -->
         <section class="cube__side cube__side--practice section">
           <header class="section__header">
-            <h2 class="section__title">Practice Flash Cards</h2>
+            <h2 class="section__title">Practice deck: <span id="practice-deck-name"></span></h2>
             <a href="#" class="section__exit-btn">
               <i class="fa-solid fa-arrow-right-from-bracket section__exit-btn--icon"></i>
               <span class="section__exit-btn--text">Exit</span>
             </a>
           </header>
-          <div id="cards-container" class="cards-container"></div>
+          <div class="progress">
+            <div class="progress__bar-outer">
+              <div class="progress__bar-inner"></div>
+            </div>
+            <div class="progress__counter">
+              <span class="progress__counter-current">2</span>
+              <span class="progress__counter-total">14</span>
+            </div>
+          </div>
+          <div id="practice-deck__cards-slider" class="practice-deck__cards-slider"></div>
           <div class="card-evaluation">
-            <button data-cardEval="easy">Easy</button>
-            <button data-cardEval="hard">Hard</button>
+            <button id="card-evaluation--easy">Easy</button>
+            <button id="card-evaluation--ok">Ok</button>
+            <button id="card-evaluation--hard">Hard</button>
+          </div>
+          <div class="finish-deck">
+            <button id="finish-practice-btn" class="finish-practice-btn">Done</button>
           </div>
         </section>
         <!-- BOTTOM -->
