@@ -505,6 +505,12 @@ h2 {
 .cube__side--practice .practice-deck__cards-slider .card__inner--back {
   transform: rotateX(180deg);
 }
+.cube__side--practice .practice-deck__cards-slider .card-question-text {
+  pointer-events: none;
+}
+.cube__side--practice .practice-deck__cards-slider .card-answer-text {
+  pointer-events: none;
+}
 .cube__side--practice .practice-deck__cards-slider .card--prev {
   opacity: 0;
   transform: translateX(-105%) rotateY(30deg);
