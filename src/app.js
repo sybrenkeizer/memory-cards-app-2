@@ -845,12 +845,12 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		document
 			.querySelector(DOM.msDeleteDeckMenu)
 			.addEventListener('keypress', msDeleteDeckMenuKeyEnter);
-		document
-			.querySelector(DOM.msStatisticsSectionBtn)
-			.addEventListener('click', msStatisticsSectionSubmit);
-		document
-			.querySelector(DOM.msStatisticsSectionMenu)
-			.addEventListener("keypress", msStatisticsSectionMenuKeyEnter);
+		// document
+		// 	.querySelector(DOM.msStatisticsSectionBtn)
+		// 	.addEventListener('click', msStatisticsSectionSubmit);
+		// document
+		// 	.querySelector(DOM.msStatisticsSectionMenu)
+		// 	.addEventListener("keypress", msStatisticsSectionMenuKeyEnter);
 		document
 			.querySelector(DOM.msEditSectionMenu)
 			.addEventListener('click', selectDeckToEdit);
