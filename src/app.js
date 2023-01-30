@@ -8,6 +8,8 @@
 // TODO : Add methods to deck controller to deal with data updates
 // TODO : Trim UI selectors
 // TODO : Join all cardslider event listeners together?
+// TODO : Change progress counter elements to input. Align text.
+
 
 
 // STORAGE CONTROLLER
@@ -510,18 +512,18 @@ const UICtrl = (function () {
 				cardsSlider.insertBefore(div, cardsSlider.lastElementChild);
 			}
 		},
-		esCreateCardUI: () => {
+		esCreateCardUI: (card) => {
 			const cardsSlider = document.querySelector(UISelectors.esCardSlider);
 			const div = document.createElement('DIV');
 			div.className = 'card';
 			div.innerHTML = `
 				<div class="card__inner">
 					<div class="card__inner--front">
-						<p class="card-question-text">${newCard.question}</p>
+						<p class="card-question-text">${card.question}</p>
 						<button class="delete-card-btn">x</button>
 					</div>
 					<div class="card__inner--back">
-					<p class="card-answer-text">${newCard.answer}</p>
+					<p class="card-answer-text">${card.answer}</p>
 						<button class="delete-card-btn">x</button>
 					</div>
 				</div>
@@ -776,19 +778,33 @@ const UICtrl = (function () {
 			const sliderEl = document.querySelector(UISelectors.psCardSlider);
 			Array.from(sliderEl.children).forEach(card => card.remove());
 		},
-
-
-
-
-
-
-
-		// Statistics section methods
-
-
-
-
-
+		psCreateCardUI: () => {
+			const cardsSlider = document.querySelector(UISelectors.psCardSlider);
+			const div = document.createElement('DIV');
+			div.className = 'card';
+			div.innerHTML = `
+				<div class="card__inner">
+					<div class="card__inner--front">
+						<p class="card-question-text">${newCard.question}</p>
+					</div>
+					<div class="card__inner--back">
+					<p class="card-answer-text">${newCard.answer}</p>
+					</div>
+				</div>
+			`;
+			cardsSlider.append(div);
+		},
+		psInsertCardUI: (addIndex) => {
+			const cardsSlider = document.querySelector(UISelectors.psCardSlider);
+			const cardsUI = Array.from(cardsSlider.children);
+			cardsUI.forEach((card, index) => {
+				if (addIndex + 1 === index) {
+					const newNode = cardsUI[cardsUI.length - 1];
+					cardsSlider.insertBefore(newNode, card);
+				} 
+				console.log(index, addIndex + 1);
+			});
+		},
 
 	}
 })();
@@ -937,6 +953,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		document
 			.querySelector(DOM.psFinishPracticeBtn)
 			.addEventListener('click', psFinishPracticeSubmit)
+
 	};
 
 
@@ -1326,7 +1343,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		const activeDeck = DeckCtrl.logData().activeDeck;
 		const activeInnerCardEl = Array.from(document.querySelector(UISelectors.esCardSlider).children)[1].firstElementChild;
 		DeckCtrl.addCard(question, answer);
-		UICtrl.esCreateCardUI();
+		UICtrl.esCreateCardUI(newCard);
 		UICtrl.esSortCardsUI(activeDeck);
 		UICtrl.flipCardFront(activeInnerCardEl);
 		UICtrl.clearInpVal(document.querySelector(UISelectors.esCardQuestionInp));
@@ -1470,6 +1487,9 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	const psEvalCardOkSubmit = (e) => {
 		const activeCard = DeckCtrl.logData().activeCard;
 		const activeDeck = DeckCtrl.logData().activeDeck;
+		const currentCard = activeDeck.cards[(activeDeck.cards.length - 1) - activeCard];
+		DeckCtrl.addCard(currentCard.question, currentCard.answer);
+		UICtrl.psCreateCardUI();
 		UICtrl.psShowNextCard();
 		DeckCtrl.logData().activeCard++;
 		UICtrl.psSetCounterCurrent();
@@ -1483,6 +1503,15 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 	const psEvalCardHardSubmit = (e) => {
 		const activeCard = DeckCtrl.logData().activeCard;
 		const activeDeck = DeckCtrl.logData().activeDeck;
+		const currentCard = activeDeck.cards[(activeDeck.cards.length - 1) - activeCard];
+		// const deckLength = activeDeck.cards.length;
+		// const addIndex = (Math.round((deckLength - activeCard) / 2));
+		DeckCtrl.addCard(currentCard.question, currentCard.answer);
+		DeckCtrl.logData().activeDeck.cards.splice(addIndex, 0, currentCard);
+		UICtrl.psCreateCardUI();
+		UICtrl.psCreateCardUI();
+		UICtrl.psInsertCardUI(activeCard + 2);
+		// UICtrl.psInsertCardUI(addIndex);
 		UICtrl.psShowNextCard();
 		DeckCtrl.logData().activeCard++;
 		UICtrl.psSetCounterCurrent();
@@ -1492,6 +1521,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 			UICtrl.psHideCardEvaluation();
 			UICtrl.psShowFinishPracticeBtn();
 		};
+
 	};
 	const psCardClick = (e) => {
 		const target = e.target;
