@@ -1244,6 +1244,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		UICtrl.csSetCardIndexInpText();
 		UICtrl.csSetDeckLengthLabText();
 		UICtrl.csDisplayCardInInputFields();
+		UICtrl.esShowAddCardBtn();
 		DeckCtrl.logData().activeCardID = newCardID;
 	};
 
