@@ -1504,13 +1504,14 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		const activeCard = DeckCtrl.logData().activeCard;
 		const activeDeck = DeckCtrl.logData().activeDeck;
 		const currentCard = activeDeck.cards[(activeDeck.cards.length - 1) - activeCard];
-		const deckLength = activeDeck.cards.length;
-		const addIndex = (Math.round((deckLength - activeCard) / 2));
+		// const deckLength = activeDeck.cards.length;
+		// const addIndex = (Math.round((deckLength - activeCard) / 2));
+		const addIndex = activeCard + 2
 		DeckCtrl.addCard(currentCard.question, currentCard.answer);
 		DeckCtrl.logData().activeDeck.cards.splice(addIndex, 0, currentCard);
 		UICtrl.psCreateCardUI();
 		UICtrl.psCreateCardUI();
-		UICtrl.psInsertCardUI(activeCard + 2);
+		UICtrl.psInsertCardUI(addIndex);
 		// UICtrl.psInsertCardUI(addIndex);
 		UICtrl.psShowNextCard();
 		DeckCtrl.logData().activeCard++;
