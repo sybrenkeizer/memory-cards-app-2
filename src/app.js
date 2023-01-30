@@ -1,5 +1,6 @@
 //! BUGS
 // - Select dropdown menu section navigation on enter remains focussed
+// - Fix algorithm for btn evaluation 'hard'
 
 //! ANOMALY
 // - First card in card slider (class = prev) takes on unintended the value of active card
@@ -8,7 +9,8 @@
 // TODO : Add methods to deck controller to deal with data updates
 // TODO : Trim UI selectors
 // TODO : Join all cardslider event listeners together?
-// TODO : Change progress counter elements to input. Align text.
+// TODO : Make UI responsive 
+// TODO : Make UI mobile responsive 
 
 
 
@@ -798,11 +800,10 @@ const UICtrl = (function () {
 			const cardsSlider = document.querySelector(UISelectors.psCardSlider);
 			const cardsUI = Array.from(cardsSlider.children);
 			cardsUI.forEach((card, index) => {
-				if (addIndex + 1 === index) {
+				if (addIndex === index) {
 					const newNode = cardsUI[cardsUI.length - 1];
 					cardsSlider.insertBefore(newNode, card);
 				} 
-				console.log(index, addIndex + 1);
 			});
 		},
 
@@ -1506,7 +1507,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		const currentCard = activeDeck.cards[(activeDeck.cards.length - 1) - activeCard];
 		// const deckLength = activeDeck.cards.length;
 		// const addIndex = (Math.round((deckLength - activeCard) / 2));
-		const addIndex = activeCard + 2
+		const addIndex = activeCard + 2;
 		DeckCtrl.addCard(currentCard.question, currentCard.answer);
 		DeckCtrl.logData().activeDeck.cards.splice(addIndex, 0, currentCard);
 		UICtrl.psCreateCardUI();

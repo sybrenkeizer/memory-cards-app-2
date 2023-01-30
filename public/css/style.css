@@ -447,12 +447,14 @@ h2 {
   position: absolute;
   top: 0;
   left: 0;
+  text-align: right;
 }
 .cube__side--practice .progress__counter-total {
   font-size: 1.7rem;
   position: absolute;
   top: 0;
   right: 0;
+  text-align: left;
 }
 .cube__side--practice .practice-deck__cards-slider {
   width: 85%;
