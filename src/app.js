@@ -14,7 +14,7 @@
 
 
 
-// STORAGE CONTROLLER
+// STORAGE CONTROLLERx
 const StorageCtrl = (function () {
 
 	return {
@@ -228,19 +228,19 @@ const UICtrl = (function () {
 			titleEl.textContent = deckName;
 		},
 		csPrintQuestion: (e) => {
-			const MAX_Q_LENGTH = 80;
+			const MAX_LENGTH = 80;
 			let questionInput = document.querySelector(UISelectors.csCardQuestionInp).value;
 			let questionOutput = document.querySelector(UISelectors.csCardActiveFront);
-			questionInput.length > MAX_Q_LENGTH
-				? questionOutput.textContent = questionInput.substring(0, MAX_Q_LENGTH) + '...'
+			questionInput.length > MAX_LENGTH
+				? questionOutput.textContent = questionInput.substring(0, MAX_LENGTH) + '...'
 				: questionOutput.textContent = questionInput;
 		},
 		csPrintAnswer: (e) => {
-			const MAX_A_LENGTH = 80;
+			const MAX_LENGTH = 80;
 			let answerInput = document.querySelector(UISelectors.csCardAnswerInp).value;
 			let answerOutput = document.querySelector(UISelectors.csCardActiveBack);
-			answerInput.length > MAX_A_LENGTH
-				? answerOutput.textContent = answerInput.substring(0, MAX_A_LENGTH) + '...'
+			answerInput.length > MAX_LENGTH
+				? answerOutput.textContent = answerInput.substring(0, MAX_LENGTH) + '...'
 				: answerOutput.textContent = answerInput;
 		},
 		csClearActiveCardFront: () => {
@@ -255,6 +255,7 @@ const UICtrl = (function () {
 		csCreateCardUI: () => {
 			const cardsSlider = document.querySelector(UISelectors.csCardSlider);
 			const div = document.createElement('DIV');
+			const MAX_LENGTH = 80;
 			div.className = 'card';
 			div.innerHTML = `
 				<div class="card__inner">
@@ -351,11 +352,12 @@ const UICtrl = (function () {
 			const lastCard = document.querySelector(UISelectors.csCardSlider).children[activeCard];
 			const lastCardQuestion = lastCard.firstElementChild.children[0].firstElementChild;
 			const lastCardAnswer = lastCard.firstElementChild.children[1].firstElementChild;
+			const MAX_LENGTH = 80;
 			lastCardQuestion.textContent = '';
 			lastCardAnswer.textContent = '';
 			if (activeCard - 1 > 0) {
-				lastCardQuestion.textContent = activeDeck.cards[activeCard - 2].question;
-				lastCardAnswer.textContent = activeDeck.cards[activeCard - 2].answer;
+				lastCardQuestion.textContent = activeDeck.cards[activeCard - 2].question.length > MAX_LENGTH ? activeDeck.cards[activeCard - 2].question.substring(0, MAX_LENGTH) + '...' : activeDeck.cards[activeCard - 2].question;
+				lastCardAnswer.textContent = activeDeck.cards[activeCard - 2].answer.length > MAX_LENGTH ? activeDeck.cards[activeCard - 2].answer.substring(0, MAX_LENGTH) + '...' : activeDeck.cards[activeCard - 2].answer;
 			}
 		},
 		csResetNextLastCardText: () => {
@@ -364,8 +366,9 @@ const UICtrl = (function () {
 			const lastCard = document.querySelector(UISelectors.csCardSlider).children[activeCard + 2];
 			const lastCardQuestion = lastCard.firstElementChild.children[0].firstElementChild;
 			const lastCardAnswer = lastCard.firstElementChild.children[1].firstElementChild;
-			lastCardQuestion.textContent = activeDeck.cards[activeCard].question;
-			lastCardAnswer.textContent = activeDeck.cards[activeCard].answer;
+			const MAX_LENGTH = 80;
+			lastCardQuestion.textContent = activeDeck.cards[activeCard].question.length > MAX_LENGTH ? activeDeck.cards[activeCard].question.substring(0, MAX_LENGTH) + '...': activeDeck.cards[activeCard].question;
+			lastCardAnswer.textContent = activeDeck.cards[activeCard].answer.length > MAX_LENGTH ? activeDeck.cards[activeCard].answer.substring(0, MAX_LENGTH) + '...' : activeDeck.cards[activeCard].answer;
 		},
 		csResetPreviewCardText: () => {
 			const prevCard = document.querySelector(UISelectors.csCardSlider).children[1];
@@ -447,6 +450,7 @@ const UICtrl = (function () {
 		csSelectAnswerInp: () => {
 			document.querySelector(UISelectors.csCardAnswerInp).select();
 		},
+		
 
 		// Edit section methods
 		esPrintTitle: (deckName) => {
@@ -497,16 +501,19 @@ const UICtrl = (function () {
 			const activeDeck = DeckCtrl.logData().activeDeck;
 			const cardsToPrint = activeDeck.cards.length;
 			for (i = 0; i < cardsToPrint; i++) {
+				const question = activeDeck.cards[i].question;
+				const answer = activeDeck.cards[i].answer;
+				const MAX_LENGTH = 80;
 				const div = document.createElement('DIV');
 				div.className = 'card';
 				div.innerHTML = `
 					<div class="card__inner">
 						<div class="card__inner--front">
-							<p class="card-question-text">${activeDeck.cards[i].question}</p>
+							<p class="card-question-text">${question.length >= MAX_LENGTH ? question.substring(0, MAX_LENGTH) + '...' : question}</p>
 							<button class="delete-card-btn">x</button>
 						</div>
 						<div class="card__inner--back">
-							<p class="card-answer-text">${activeDeck.cards[i].answer}</p>
+							<p class="card-answer-text">${answer.length >= MAX_LENGTH ? answer.substring(0, MAX_LENGTH) + '...' : answer}</p>
 							<button class="delete-card-btn">x</button>
 						</div>
 					</div>
@@ -582,11 +589,12 @@ const UICtrl = (function () {
 			const lastCard = document.querySelector(UISelectors.esCardSlider).children[activeCard];
 			const lastCardQuestion = lastCard.firstElementChild.children[0].firstElementChild;
 			const lastCardAnswer = lastCard.firstElementChild.children[1].firstElementChild;
+			const MAX_LENGTH = 80;
 			lastCardQuestion.textContent = '';
 			lastCardAnswer.textContent = '';
 			if (activeCard - 1 > 0) {
-				lastCardQuestion.textContent = activeDeck.cards[activeCard - 2].question;
-				lastCardAnswer.textContent = activeDeck.cards[activeCard - 2].answer;
+				lastCardQuestion.textContent = activeDeck.cards[activeCard - 2].question.length > MAX_LENGTH ? activeDeck.cards[activeCard - 2].question.substring(0, MAX_LENGTH) + '...' : activeDeck.cards[activeCard - 2].question;
+				lastCardAnswer.textContent = activeDeck.cards[activeCard - 2].answer.length > MAX_LENGTH ? activeDeck.cards[activeCard - 2].answer.substring(0, MAX_LENGTH) + '...' : activeDeck.cards[activeCard - 2].answer;
 			}
 		},
 		esResetNextLastCardText: () => {
@@ -595,8 +603,9 @@ const UICtrl = (function () {
 			const lastCard = document.querySelector(UISelectors.esCardSlider).children[activeCard + 2];
 			const lastCardQuestion = lastCard.firstElementChild.children[0].firstElementChild;
 			const lastCardAnswer = lastCard.firstElementChild.children[1].firstElementChild;
-			lastCardQuestion.textContent = activeDeck.cards[activeCard].question;
-			lastCardAnswer.textContent = activeDeck.cards[activeCard].answer;
+			const MAX_LENGTH = 80;
+			lastCardQuestion.textContent = activeDeck.cards[activeCard].question.length > MAX_LENGTH ? activeDeck.cards[activeCard].question.substring(0, MAX_LENGTH) + '...' : activeDeck.cards[activeCard].question;
+			lastCardAnswer.textContent = activeDeck.cards[activeCard].answer.length > MAX_LENGTH ? activeDeck.cards[activeCard].answer.substring(0, MAX_LENGTH) + '...' : activeDeck.cards[activeCard].answer;
 		},
 		esShowEditCardBtn: () => {
 			const activeCard = DeckCtrl.logData().activeCard
@@ -1232,7 +1241,7 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		DeckCtrl.deleteCard(activeDeck, cardID);
 		UICtrl.csDeleteCardFromSlider(e);
 		let newCardID
-		if (activeCard > activeDeck.cards.length) {
+		if (activeCard >= activeDeck.cards.length) {
 			DeckCtrl.logData().activeCard--;
 			UICtrl.csShowPrevCard();
 			newCardID = activeCard > 2 ? newCardID = activeDeck.cards[activeCard - 2].id : 0;
@@ -1405,10 +1414,12 @@ const AppCtrl = (function (StorageCtrl, DeckCtrl, UICtrl) {
 		DeckCtrl.deleteCard(activeDeck, cardID);
 		UICtrl.esDeleteCardFromSlider(e);
 		let newCardID
+		console.log(activeCard);
+		console.log(activeDeck.cards.length);
 		if (activeCard > activeDeck.cards.length) {
 			DeckCtrl.logData().activeCard--;
 			UICtrl.esShowPrevCard();
-			newCardID = activeCard > 2 ? newCardID = activeDeck.cards[activeCard - 2].id : 0;
+			newCardID = activeCard > 2 ? newCardID = activeDeck.cards[activeCard - 2].id : 0;	
 		} else {
 			UICtrl.esShowNextCard();
 			newCardID = activeCard > 0 ? newCardID = activeDeck.cards[activeCard - 1].id : 0;
