@@ -316,12 +316,12 @@ h2 {
 }
 .section__cards-slider .card__inner--front .delete-card-btn, .section__cards-slider .card__inner--back .delete-card-btn {
   position: absolute;
-  top: -1.05rem;
+  top: -0.9rem;
   right: -0.65rem;
-  padding-inline: 0.2rem;
+  padding-inline: 0.25rem;
   background: hsl(253deg, 60%, 11%);
   color: hsl(173deg, 76%, 62%);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
