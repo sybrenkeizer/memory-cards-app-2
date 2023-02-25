@@ -120,8 +120,8 @@ h2 {
   height: inherit;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
-  padding: 0.6rem 1.8rem;
+  gap: 1.4rem;
+  padding: 0.7rem 2.1rem;
   background-color: hsl(253deg, 60%, 11%);
   border: 0.25rem solid hsl(289deg, 74%, 57%);
   border-radius: 0.35rem;
@@ -162,7 +162,7 @@ h2 {
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.4rem;
 }
 .section .form-control {
   position: relative;
@@ -384,7 +384,7 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2.4rem;
+  gap: 3.15rem;
   margin-top: -2rem;
 }
 .cube__side--main #statistics-deck__menu,
