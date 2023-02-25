@@ -284,6 +284,7 @@ h2 {
   height: 90%;
   transition: transform 0.4s ease, opacity 0.4s ease;
   color: hsl(173deg, 76%, 62%);
+  word-break: break-all;
 }
 .section__cards-slider .card__inner {
   width: 100%;
