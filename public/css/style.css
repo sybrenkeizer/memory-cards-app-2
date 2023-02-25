@@ -387,6 +387,16 @@ h2 {
   gap: 2.4rem;
   margin-top: -2rem;
 }
+.cube__side--main #statistics-deck__menu,
+.cube__side--main #statistics-deck__btn {
+  cursor: not-allowed;
+}
+.cube__side--main #statistics-deck__btn {
+  color: hsl(173deg, 76%, 35%);
+}
+.cube__side--main #statistics-deck__btn:hover {
+  background-color: hsl(253deg, 60%, 11%);
+}
 
 .cube__side--create form .form-control input[type=text],
 .cube__side--edit form .form-control input[type=text] {
