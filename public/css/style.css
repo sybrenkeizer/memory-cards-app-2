@@ -120,8 +120,8 @@ h2 {
   height: inherit;
   display: flex;
   flex-direction: column;
-  gap: calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 2);
-  padding: clamp(0.5rem, 0.4rem + 0.3vw, 1rem) calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 3);
+  gap: 1.2rem;
+  padding: 0.6rem 1.8rem;
   background-color: hsl(253deg, 60%, 11%);
   border: 0.25rem solid hsl(289deg, 74%, 57%);
   border-radius: 0.35rem;
@@ -162,7 +162,7 @@ h2 {
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 2);
+  gap: 1.2rem;
 }
 .section .form-control {
   position: relative;
@@ -383,7 +383,7 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: calc(clamp(0.5rem, 0.4rem + 0.3vw, 1rem) * 4);
+  gap: 2.4rem;
   margin-top: -2rem;
 }
 
