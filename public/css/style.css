@@ -42,7 +42,11 @@ a {
 
 ::selection {
   background-color: #703176;
-  color: hsl(0deg, 0%, 94%);
+  color: hsl(0, 0%, 94%);
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 h1 {
@@ -58,7 +62,7 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: hsl(253deg, 60%, 11%);
+  background-color: hsl(253, 60%, 11%);
 }
 
 ::-webkit-scrollbar {
@@ -66,18 +70,18 @@ h2 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: hsl(289deg, 74%, 57%);
-  border: 0.3rem solid hsl(253deg, 60%, 11%);
+  background-color: hsl(289, 74%, 57%);
+  border: 0.3rem solid hsl(253, 60%, 11%);
   border-radius: 100vw;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: hsl(253deg, 60%, 11%);
+  background-color: hsl(253, 60%, 11%);
 }
 
-@supports (scrollbar-color: hsl(253deg, 60%, 11%) hsl(253deg, 60%, 11%)) {
+@supports (scrollbar-color: hsl(253, 60%, 11%) hsl(253, 60%, 11%)) {
   * {
-    scrollbar-color: hsl(289deg, 74%, 57%) hsl(289deg, 74%, 57%);
+    scrollbar-color: hsl(289, 74%, 57%) hsl(289, 74%, 57%);
     scrollbar-width: auto;
   }
 }
@@ -122,14 +126,14 @@ h2 {
   flex-direction: column;
   gap: 1.4rem;
   padding: 0.7rem 2.1rem;
-  background-color: hsl(253deg, 60%, 11%);
-  border: 0.25rem solid hsl(289deg, 74%, 57%);
+  background-color: hsl(253, 60%, 11%);
+  border: 0.25rem solid hsl(289, 74%, 57%);
   border-radius: 0.35rem;
 }
 .section__header {
   position: relative;
   text-align: center;
-  color: hsl(289deg, 74%, 57%);
+  color: hsl(289, 74%, 57%);
 }
 .section__exit-btn {
   position: absolute;
@@ -167,9 +171,9 @@ h2 {
 .section .form-control {
   position: relative;
   width: 100%;
-  border: 0.1rem solid hsl(289deg, 74%, 57%);
+  border: 0.1rem solid hsl(289, 74%, 57%);
   border-radius: 0.35rem;
-  color: hsl(253deg, 60%, 11%);
+  color: hsl(253, 60%, 11%);
 }
 .section .form-control select,
 .section .form-control input,
@@ -179,40 +183,40 @@ h2 {
   border: none;
 }
 .section .form-control select {
-  background-color: hsl(289deg, 74%, 57%);
-  color: hsl(253deg, 60%, 11%);
+  background-color: hsl(289, 74%, 57%);
+  color: hsl(253, 60%, 11%);
   font-weight: 500;
 }
 .section .form-control button {
   width: 100%;
   background-color: transparent;
   border-radius: 0.35rem;
-  color: hsl(173deg, 76%, 62%);
+  color: hsl(173, 76%, 62%);
   font-weight: 500;
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   cursor: pointer;
 }
 .section .form-control button:hover {
   background-color: #703176;
-  color: hsl(0deg, 0%, 94%);
+  color: hsl(0, 0%, 94%);
 }
 .section .form-control textarea {
   resize: none;
   width: 100%;
   background-color: transparent;
-  color: hsl(173deg, 76%, 62%);
+  color: hsl(173, 76%, 62%);
 }
 .section .form-control label {
   position: absolute;
   top: -0.8rem;
   left: 0.7rem;
   padding-inline: 0.4rem;
-  background-color: hsl(253deg, 60%, 11%);
+  background-color: hsl(253, 60%, 11%);
   font-weight: 500;
-  color: hsl(289deg, 74%, 57%);
+  color: hsl(289, 74%, 57%);
 }
 .section .form-control ::placeholder {
-  color: hsl(253deg, 60%, 11%);
+  color: hsl(253, 60%, 11%);
 }
 .section__cards-slider {
   perspective: 1000px;
@@ -226,7 +230,7 @@ h2 {
   align-content: center;
 }
 .section__cards-slider .card-nav {
-  color: hsl(173deg, 76%, 62%);
+  color: hsl(173, 76%, 62%);
 }
 .section__cards-slider .card-nav__right {
   display: none;
@@ -283,7 +287,7 @@ h2 {
   width: 50%;
   height: 90%;
   transition: transform 0.4s ease, opacity 0.4s ease;
-  color: hsl(173deg, 76%, 62%);
+  color: hsl(173, 76%, 62%);
   word-break: break-all;
 }
 .section__cards-slider .card__inner {
@@ -294,7 +298,7 @@ h2 {
   justify-content: center;
   transform-style: preserve-3d;
   transition: transform 0.4s ease;
-  border: 0.01rem solid hsl(173deg, 76%, 62%);
+  border: 0.01rem solid hsl(173, 76%, 62%);
   position: absolute;
 }
 .section__cards-slider .card__inner--front, .section__cards-slider .card__inner--back {
@@ -319,8 +323,8 @@ h2 {
   top: -0.9rem;
   right: -0.65rem;
   padding-inline: 0.25rem;
-  background: hsl(253deg, 60%, 11%);
-  color: hsl(173deg, 76%, 62%);
+  background: hsl(253, 60%, 11%);
+  color: hsl(173, 76%, 62%);
   font-size: 1.4rem;
   cursor: pointer;
   opacity: 0;
@@ -371,8 +375,8 @@ h2 {
   grid-template-columns: 5fr 2fr;
 }
 .cube__side--main .form-control input[type=text] {
-  background-color: hsl(289deg, 74%, 57%);
-  color: hsl(253deg, 60%, 11%);
+  background-color: hsl(289, 74%, 57%);
+  color: hsl(253, 60%, 11%);
   font-weight: 500;
 }
 .cube__side--main .form-control button {
@@ -392,17 +396,17 @@ h2 {
   cursor: not-allowed;
 }
 .cube__side--main #statistics-deck__btn {
-  color: hsl(173deg, 76%, 35%);
+  color: hsl(173, 76%, 35%);
 }
 .cube__side--main #statistics-deck__btn:hover {
-  background-color: hsl(253deg, 60%, 11%);
+  background-color: hsl(253, 60%, 11%);
 }
 
 .cube__side--create form .form-control input[type=text],
 .cube__side--edit form .form-control input[type=text] {
   width: 100%;
   background-color: transparent;
-  color: hsl(173deg, 76%, 62%);
+  color: hsl(173, 76%, 62%);
 }
 .cube__side--create form .form-control .add-card-btn,
 .cube__side--edit form .form-control .add-card-btn {
@@ -429,14 +433,14 @@ h2 {
 .cube__side--practice .progress {
   display: flex;
   gap: 1rem;
-  color: hsl(173deg, 76%, 62%);
+  color: hsl(173, 76%, 62%);
   height: 5rem;
   align-items: center;
   justify-content: center;
 }
 .cube__side--practice .progress__bar-outer {
   width: 80%;
-  border: 0.15rem solid hsl(289deg, 74%, 57%);
+  border: 0.15rem solid hsl(289, 74%, 57%);
   border-radius: 3rem;
   padding: 0.3rem;
   height: 1.5rem;
@@ -444,7 +448,7 @@ h2 {
 .cube__side--practice .progress__bar-inner {
   width: 15%;
   height: 100%;
-  background-color: hsl(289deg, 74%, 57%);
+  background-color: hsl(289, 74%, 57%);
   border-radius: 3rem;
   transition: width 0.5s ease-in-out;
 }
@@ -481,7 +485,7 @@ h2 {
   height: 100%;
   background-color: transparent;
   opacity: 0;
-  color: hsl(173deg, 76%, 62%);
+  color: hsl(173, 76%, 62%);
   transition: transform 0.5s ease-in-out, opacity 0.55s ease-in-out;
 }
 .cube__side--practice .practice-deck__cards-slider .card__inner {
@@ -492,7 +496,7 @@ h2 {
   justify-content: center;
   transform-style: preserve-3d;
   transition: transform 0.4s ease;
-  border: 0.01rem solid hsl(173deg, 76%, 62%);
+  border: 0.01rem solid hsl(173, 76%, 62%);
   position: relative;
 }
 .cube__side--practice .practice-deck__cards-slider .card__inner--front, .cube__side--practice .practice-deck__cards-slider .card__inner--back {
@@ -550,15 +554,15 @@ h2 {
   width: 7rem;
   background-color: transparent;
   border-radius: 0.35rem;
-  color: hsl(173deg, 76%, 62%);
+  color: hsl(173, 76%, 62%);
   font-weight: 500;
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   cursor: pointer;
-  border: 0.1rem solid hsl(289deg, 74%, 57%);
+  border: 0.1rem solid hsl(289, 74%, 57%);
 }
 .cube__side--practice .card-evaluation > *:hover {
   background-color: #703176;
-  color: hsl(0deg, 0%, 94%);
+  color: hsl(0, 0%, 94%);
 }
 .cube__side--practice .finish-deck {
   display: none;
@@ -571,13 +575,13 @@ h2 {
   width: 100%;
   background-color: transparent;
   border-radius: 0.35rem;
-  color: hsl(173deg, 76%, 62%);
+  color: hsl(173, 76%, 62%);
   font-weight: 500;
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   cursor: pointer;
-  border: 0.1rem solid hsl(289deg, 74%, 57%);
+  border: 0.1rem solid hsl(289, 74%, 57%);
 }
 .cube__side--practice .finish-deck .finish-practice-btn:hover {
   background-color: #703176;
-  color: hsl(0deg, 0%, 94%);
+  color: hsl(0, 0%, 94%);
 }/*# sourceMappingURL=style.css.map */
